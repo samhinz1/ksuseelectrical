@@ -1,0 +1,117 @@
+
+import { Link } from "react-router-dom";
+import { Phone, Mail, MapPin, Home } from "lucide-react";
+
+const Footer = () => {
+  return (
+    <footer className="bg-brand-black text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Company Info */}
+          <div>
+            <img 
+              src="/lovable-uploads/4f914164-4f5c-48d4-944a-98e072a479e8.png" 
+              alt="K Skuse Electrical Logo" 
+              className="h-16 mb-4" 
+            />
+            <p className="my-4 text-gray-300">
+              Professional electrical services for residential and commercial properties in Brisbane and SE Queensland.
+            </p>
+            <p className="text-gray-300">
+              Licensed and insured for your peace of mind.
+            </p>
+          </div>
+          
+          {/* Contact Info */}
+          <div>
+            <h3 className="font-heading font-bold text-xl mb-4">Contact Us</h3>
+            <div className="space-y-3">
+              <p className="flex items-center gap-3">
+                <Phone size={18} className="text-brand-orange" />
+                <a href="tel:0432351721" className="hover:text-brand-orange transition-colors">
+                  0432 351 721
+                </a>
+              </p>
+              <p className="flex items-center gap-3">
+                <Mail size={18} className="text-brand-orange" />
+                <a href="mailto:kskuseelectrical@gmail.com" className="hover:text-brand-orange transition-colors">
+                  kskuseelectrical@gmail.com
+                </a>
+              </p>
+              <p className="flex items-center gap-3">
+                <MapPin size={18} className="text-brand-orange" />
+                <span>Brisbane, Queensland</span>
+              </p>
+            </div>
+          </div>
+          
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-heading font-bold text-xl mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link 
+                  to="/"
+                  className="hover:text-brand-orange transition-colors flex items-center gap-2"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  <Home size={16} />
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/about"
+                  className="hover:text-brand-orange transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/services"
+                  className="hover:text-brand-orange transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/faq"
+                  className="hover:text-brand-orange transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact"
+                  className="hover:text-brand-orange transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="border-t border-gray-700 mt-8 pt-8 text-sm text-gray-400">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
+            <p>&copy; {new Date().getFullYear()} K Skuse Electrical. All rights reserved.</p>
+            <p>
+              <Link to="/privacy-policy" className="hover:text-brand-orange transition-colors">Privacy Policy</Link>
+              {" | "}
+              <Link to="/terms-of-service" className="hover:text-brand-orange transition-colors">Terms of Service</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
