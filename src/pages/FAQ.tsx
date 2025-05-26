@@ -67,7 +67,7 @@ const FAQPage = () => {
       <section className="relative py-16 md:py-24">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/lovable-uploads/wiring.jpg')" }}
+          style={{ backgroundImage: "url('/lovable-uploads/wiring.webp')" }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         </div>

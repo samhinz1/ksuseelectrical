@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, Zap, Users, Home } from "lucide-react";
+import { ShieldCheck, Zap, Users, Home, Clock, CheckCircle, Star } from "lucide-react";
 import CallToAction from "@/components/CallToAction";
 
 const AboutPage = () => {
@@ -15,7 +15,7 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1709656602966-b71944dbad64?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
+            backgroundImage: 'url("/lovable-uploads/pole.avif")',
             backgroundSize: '100%',
             backgroundPosition: 'center center'
           }}
@@ -38,7 +38,7 @@ const AboutPage = () => {
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="md:w-1/2">
               <img
-                src="/lovable-uploads/kskusephot.png"
+                src="/lovable-uploads/kskusephot.webp"
                 alt="Professional Electrician"
                 className="rounded-lg shadow-lg w-3/4 h-auto object-cover"
               />
@@ -76,18 +76,30 @@ const AboutPage = () => {
                 </ul>
               </div>
               {/* Stat Cards */}
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
-                  <span className="text-3xl font-bold text-brand-orange mb-2">10+</span>
-                  <span className="text-gray-700 font-medium">Years of Experience</span>
+              <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-10">
+                <div className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 flex flex-col items-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange to-orange-400"></div>
+                  <div className="bg-gradient-to-br from-brand-orange/10 to-orange-100/50 p-5 rounded-2xl mb-6">
+                    <Clock className="h-10 w-10 text-brand-orange" />
+                  </div>
+                  <span className="text-5xl font-bold bg-gradient-to-r from-brand-orange to-orange-500 bg-clip-text text-transparent mb-3">10+</span>
+                  <span className="text-gray-700 font-semibold text-lg">Years of Experience</span>
                 </div>
-                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
-                  <span className="text-3xl font-bold text-brand-orange mb-2">3000+</span>
-                  <span className="text-gray-700 font-medium">Jobs Completed</span>
+                <div className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 flex flex-col items-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange to-orange-400"></div>
+                  <div className="bg-gradient-to-br from-brand-orange/10 to-orange-100/50 p-5 rounded-2xl mb-6">
+                    <CheckCircle className="h-10 w-10 text-brand-orange" />
+                  </div>
+                  <span className="text-5xl font-bold bg-gradient-to-r from-brand-orange to-orange-500 bg-clip-text text-transparent mb-3">3000+</span>
+                  <span className="text-gray-700 font-semibold text-lg">Jobs Completed</span>
                 </div>
-                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
-                  <span className="text-3xl font-bold text-brand-orange mb-2">100</span>
-                  <span className="text-gray-700 font-medium">5 Star Reviews</span>
+                <div className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 flex flex-col items-center transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange to-orange-400"></div>
+                  <div className="bg-gradient-to-br from-brand-orange/10 to-orange-100/50 p-5 rounded-2xl mb-6">
+                    <Star className="h-10 w-10 text-brand-orange" />
+                  </div>
+                  <span className="text-5xl font-bold bg-gradient-to-r from-brand-orange to-orange-500 bg-clip-text text-transparent mb-3">100+</span>
+                  <span className="text-gray-700 font-semibold text-lg">5 Star Reviews</span>
                 </div>
               </div>
             </div>
@@ -108,7 +120,7 @@ const AboutPage = () => {
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/qbcc.png" 
+                  src="/lovable-uploads/qbcc.webp" 
                   alt="QBCC License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -120,7 +132,7 @@ const AboutPage = () => {
               
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/qldgov.png" 
+                  src="/lovable-uploads/qldgov.webp" 
                   alt="QLD Government License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -132,7 +144,7 @@ const AboutPage = () => {
               
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/ARC.jpg" 
+                  src="/lovable-uploads/ARC.webp" 
                   alt="ARC License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -144,7 +156,7 @@ const AboutPage = () => {
 
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/mea.png" 
+                  src="/lovable-uploads/mea.webp" 
                   alt="MEA License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />

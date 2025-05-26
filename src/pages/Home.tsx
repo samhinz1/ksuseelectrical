@@ -30,9 +30,7 @@ const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
       }`}
     >
       <div className="flex items-center">
-        <div className={`mr-3 p-2 rounded-lg transition-all duration-200 ${
-          isMobile && isInCenter ? 'text-brand-orange bg-orange-50' : 'text-gray-600 group-hover:text-brand-orange group-hover:bg-orange-50'
-        }`}>
+        <div className="mr-3 p-2 rounded-lg text-brand-orange bg-orange-50">
           {icon}
         </div>
         <span className="font-semibold">{title}</span>
@@ -55,12 +53,17 @@ const BrandLogo = ({ src, alt }: { src: string; alt: string }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Special case for Philips and Clipsal logos
+  const isLargeLogo = alt === "Philips" || alt === "Clipsal";
+
   return (
     <div ref={isMobile ? elementRef : undefined} className="flex items-center justify-center">
       <img 
         src={src} 
         alt={alt} 
-        className={`h-16 object-contain filter transition-all duration-300 ${
+        className={`object-contain filter transition-all duration-300 ${
+          isLargeLogo ? 'h-32' : 'h-16'
+        } ${
           isMobile && isInCenter ? 'grayscale-0 scale-110' : 'grayscale hover:grayscale-0 hover:scale-110'
         }`}
       />
@@ -128,7 +131,7 @@ const HomePage = () => {
       author: "Sarah Johnson",
       location: "Norman Park, Brisbane",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile1.webp",
       source: "Google"
     },
     {
@@ -136,7 +139,7 @@ const HomePage = () => {
       author: "David Chen",
       location: "Coorparoo",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile2.webp",
       source: "Hipages"
     },
     {
@@ -144,7 +147,7 @@ const HomePage = () => {
       author: "Lisa Anderson",
       location: "Camp Hill",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile3.webp",
       source: "Yellow Pages"
     },
     {
@@ -152,7 +155,7 @@ const HomePage = () => {
       author: "Mark Thompson",
       location: "South Brisbane",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile4.webp",
       source: "Google"
     },
     {
@@ -160,7 +163,7 @@ const HomePage = () => {
       author: "Michael Brown",
       location: "Hawthorne",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile5.webp",
       source: "Hipages"
     },
     {
@@ -168,7 +171,7 @@ const HomePage = () => {
       author: "Emma Wilson",
       location: "Bulimba",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile6.webp",
       source: "Google"
     },
     {
@@ -176,15 +179,15 @@ const HomePage = () => {
       author: "Rachel Green",
       location: "East Brisbane",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile7.webp",
       source: "Yellow Pages"
     },
     {
-      quote: "K Skuse did an amazing job with our office renovation. Found them on Hipages and they were the most professional team we've worked with.",
+      quote: "K Skuse did an amazing job with our office renovation. Most professional team we've worked with.",
       author: "James Wilson",
       location: "Fortitude Valley",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile8.webp",
       source: "Hipages"
     },
     {
@@ -192,25 +195,23 @@ const HomePage = () => {
       author: "Sophie Taylor",
       location: "New Farm",
       rating: 5,
-      profilePhoto: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&auto=format",
+      profilePhoto: "/lovable-uploads/profile9.webp",
       source: "Yellow Pages"
     }
   ];
 
-  const totalSlides = Math.ceil(testimonials.length / reviewsPerPage);
+  const maxSlide = testimonials.length - reviewsPerPage;
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    setCurrentSlide((prev) => (prev < maxSlide ? prev + 1 : prev));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCurrentSlide((prev) => (prev > 0 ? prev - 1 : prev));
   };
 
-  const visibleTestimonials = testimonials.slice(
-    currentSlide * reviewsPerPage,
-    (currentSlide + 1) * reviewsPerPage
-  );
+  // For dots, show one for each possible window
+  const totalWindows = testimonials.length - reviewsPerPage + 1;
 
   return (
     <>
@@ -271,7 +272,7 @@ const HomePage = () => {
                       id="message"
                       rows={2}
                       className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                      placeholder="Brief description of your needs"
+                      placeholder="How can we help?"
                     ></textarea>
                   </div>
                   <button
@@ -292,7 +293,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="md:w-1/2">
-              <h2 className="text-5xl font-bold mb-4">Brisbane's #1 Trusted Electrician</h2>
+              <h2 className="text-5xl font-bold mb-4">SE Queensland's #1 Trusted Electrician</h2>
               <p className="text-gray-700 mb-6">
                 K Skuse Electrical is committed to providing safe, reliable, and high-quality electrical solutions for homes and businesses throughout Brisbane and SE Queensland.
               </p>
@@ -378,34 +379,48 @@ const HomePage = () => {
           <div className="relative">
             <button
               onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors z-10"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center"
               aria-label="Previous reviews"
             >
-              <ChevronLeft className="h-6 w-6 text-gray-600" />
+              <ChevronLeft className="h-8 w-8 text-brand-orange" />
             </button>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {visibleTestimonials.map((testimonial, index) => (
-                <TestimonialCard
-                  key={index}
-                  quote={testimonial.quote}
-                  author={testimonial.author}
-                  location={testimonial.location}
-                  rating={testimonial.rating}
-                  profilePhoto={testimonial.profilePhoto}
-                  source={testimonial.source}
-                />
-              ))}
+            <div className="overflow-hidden">
+              <div 
+                className="flex will-change-transform transition-transform duration-300 ease-out"
+                style={{ transform: `translateX(-${currentSlide * (100 / reviewsPerPage)}%)` }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <div 
+                    key={index} 
+                    className="w-full flex-shrink-0 px-4"
+                    style={{ 
+                      width: `${100 / reviewsPerPage}%`,
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden'
+                    }}
+                  >
+                    <TestimonialCard
+                      quote={testimonial.quote}
+                      author={testimonial.author}
+                      location={testimonial.location}
+                      rating={testimonial.rating}
+                      profilePhoto={testimonial.profilePhoto}
+                      source={testimonial.source}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <button
               onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors z-10"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center"
               aria-label="Next reviews"
             >
-              <ChevronRight className="h-6 w-6 text-gray-600" />
+              <ChevronRight className="h-8 w-8 text-brand-orange" />
             </button>
           </div>
           <div className="flex justify-center mt-8 gap-2">
-            {[...Array(totalSlides)].map((_, index) => (
+            {[...Array(totalWindows)].map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
@@ -434,19 +449,19 @@ const HomePage = () => {
               alt="Schneider Electric" 
             />
             <BrandLogo 
-              src="/lovable-uploads/philips.png" 
+              src="/lovable-uploads/philips.webp" 
               alt="Philips" 
             />
             <BrandLogo 
-              src="/lovable-uploads/HPM-LOGO.jpg" 
+              src="/lovable-uploads/HPM-LOGO.webp" 
               alt="HPM" 
             />
             <BrandLogo 
-              src="/lovable-uploads/clipsal-logo.png" 
+              src="/lovable-uploads/clipsal-logo.webp" 
               alt="Clipsal" 
             />
             <BrandLogo 
-              src="/lovable-uploads/arlec.png" 
+              src="/lovable-uploads/arlec.webp" 
               alt="Arlec" 
             />
           </div>
