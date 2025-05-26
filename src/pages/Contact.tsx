@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
@@ -11,12 +10,20 @@ const ContactPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gray-50 py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-            <p className="text-xl text-gray-600">
-              Get in touch with K Skuse Electrical for all your electrical needs in Brisbane.
+      <section className="relative bg-gray-50 py-16 md:py-24">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url("https://images.pexels.com/photos/9242887/pexels-photo-9242887.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50" /> {/* Dark overlay for better text visibility */}
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">Contact Us</h1>
+            <p className="text-xl text-gray-100">
+              Get in touch with K Skuse Electrical for all your electrical needs in Brisbane, Gold Coast & Surrounding Areas.
             </p>
           </div>
         </div>
@@ -36,7 +43,6 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">Phone</h3>
-                    <p className="text-gray-600 mb-1">Call us directly:</p>
                     <a href="tel:0432351721" className="text-brand-orange hover:underline font-semibold">
                       0432 351 721
                     </a>
@@ -49,7 +55,6 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">Email</h3>
-                    <p className="text-gray-600 mb-1">Send us an email:</p>
                     <a href="mailto:kskuseelectrical@gmail.com" className="text-brand-orange hover:underline font-semibold">
                       kskuseelectrical@gmail.com
                     </a>
@@ -62,9 +67,20 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">Service Area</h3>
-                    <p className="text-gray-600">
-                      We provide electrical services throughout Brisbane and SE Queensland.
-                    </p>
+                    <ul className="text-gray-600 list-disc pl-4 space-y-1">
+                      <li>Brisbane</li>
+                      <li>Gold Coast</li>
+                      <li>Ipswich</li>
+                      <li>Beenleigh</li>
+                      <li>Bay Area</li>
+                      <li>Logan</li>
+                      <li>Beaudesert</li>
+                      <li>Redland</li>
+                      <li>Scenic Rim</li>
+                      <li>Moreton Bay</li>
+                      <li>Somerset</li>
+                      <li>Gold Coast Hinterland</li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -77,12 +93,8 @@ const ContactPage = () => {
                     <span>7:00 AM - 5:00 PM</span>
                   </p>
                   <p className="flex justify-between">
-                    <span>Saturday:</span>
+                    <span>Saturday & Sunday:</span>
                     <span>By appointment</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Sunday:</span>
-                    <span>Closed</span>
                   </p>
                   <p className="mt-4 text-sm italic">
                     * 24/7 emergency services available
@@ -105,26 +117,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-center">Our Service Area</h2>
-            <div className="h-96 w-full rounded-lg overflow-hidden shadow-md">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113053.89976992986!2d152.9498678461927!3d-27.470995336353084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b91579aac93d233%3A0x402a35af3deaf40!2sBrisbane%20QLD!5e0!3m2!1sen!2sau!4v1657877204414!5m2!1sen!2sau"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="K Skuse Electrical Service Area"
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      </section>
+      
     </>
   );
 };

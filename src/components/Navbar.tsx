@@ -49,7 +49,7 @@ const Navbar = () => {
             href="tel:0432351721"
             className="bg-brand-orange text-white px-4 py-2 rounded font-semibold hover:bg-opacity-90 transition-all"
           >
-            Call Now
+            0432 351 721
           </a>
         </nav>
 

@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShieldCheck, Zap, Users, Home } from "lucide-react";
@@ -12,11 +11,21 @@ const AboutPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gray-50 py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About K Skuse Electrical</h1>
-            <p className="text-xl text-gray-600">
+      <section className="relative bg-gray-50 py-16 md:py-24">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url("https://images.unsplash.com/photo-1709656602966-b71944dbad64?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
+            backgroundSize: '100%',
+            backgroundPosition: 'center center'
+          }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        </div>
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-4xl text-left pl-4 md:pl-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">About K Skuse Electrical</h1>
+            <p className="text-xl text-gray-200">
               Licensed electrician with 10+ years of experience serving Brisbane and SE Queensland.
             </p>
           </div>
@@ -26,24 +35,24 @@ const AboutPage = () => {
       {/* About Content */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-12 items-center">
+          <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="md:w-1/2">
               <img
-                src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=800&h=800"
+                src="/lovable-uploads/kskusephot.png"
                 alt="Professional Electrician"
-                className="rounded-lg shadow-lg w-full h-auto object-cover"
+                className="rounded-lg shadow-lg w-3/4 h-auto object-cover"
               />
             </div>
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                K Skuse Electrical was established with a simple mission: to provide safe, reliable, and high-quality electrical solutions to homes and businesses throughout Brisbane and SE Queensland.
+                At K Skuse Electrical, we believe in doing it right the first time. Founded by Kurt Skuse, our company is built on a foundation of honesty, integrity, and trust. With a commitment to old-school service, we treat every project with the care and attention it deserves, ensuring our clients in the local community receive reliable, high-quality electrical solutions.
               </p>
               <p className="text-gray-700 mb-4">
-                With over a decade of experience in the electrical industry, we've built a reputation for excellent workmanship, professionalism, and customer satisfaction.
+                Kurt Skuse, a skilled and dedicated electrician, brings years of expertise to every job. As a local and trusted professional, Kurt takes pride in delivering quality workmanship that is guaranteed to meet the highest standards. Whether it's a small repair or a complex installation, Kurt and his team at K Skuse Electrical are committed to providing exceptional service, fostering lasting relationships with our clients, and powering homes and businesses with confidence.
               </p>
               <p className="text-gray-700 mb-4">
-                We understand that electrical issues can be disruptive and sometimes dangerous, which is why we're committed to prompt service and effective solutions to keep your home or business safe and powered.
+                When you choose K Skuse Electrical, you're choosing a partner who values your trust and strives to exceed your expectations. We're here to light the way, one project at a time.
               </p>
               <div className="mt-6">
                 <h3 className="font-bold text-xl mb-3">Why Choose Us?</h3>
@@ -66,53 +75,26 @@ const AboutPage = () => {
                   </li>
                 </ul>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Mission & Values */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-center">Our Mission & Values</h2>
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <h3 className="text-2xl font-bold mb-4">Mission</h3>
-              <p className="text-gray-700 mb-8">
-                To provide safe, reliable, and high-quality electrical solutions that exceed customer expectations through professional service, technical expertise, and a commitment to safety.
-              </p>
-              
-              <h3 className="text-2xl font-bold mb-4">Core Values</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-brand-orange mb-2">Safety First</h4>
-                  <p className="text-gray-600">
-                    We prioritize safety in every project, ensuring all work meets or exceeds electrical safety standards.
-                  </p>
+              {/* Stat Cards */}
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
+                  <span className="text-3xl font-bold text-brand-orange mb-2">10+</span>
+                  <span className="text-gray-700 font-medium">Years of Experience</span>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-brand-orange mb-2">Quality Workmanship</h4>
-                  <p className="text-gray-600">
-                    We take pride in our work and ensure every job is completed to the highest standard.
-                  </p>
+                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
+                  <span className="text-3xl font-bold text-brand-orange mb-2">3000+</span>
+                  <span className="text-gray-700 font-medium">Jobs Completed</span>
                 </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-brand-orange mb-2">Customer Satisfaction</h4>
-                  <p className="text-gray-600">
-                    Your satisfaction is our priority. We're not happy until you're completely satisfied with our work.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-brand-orange mb-2">Integrity</h4>
-                  <p className="text-gray-600">
-                    We operate with honesty, transparency, and fairness in all our business dealings.
-                  </p>
+                <div className="bg-gray-50 rounded-lg shadow p-6 flex flex-col items-center">
+                  <span className="text-3xl font-bold text-brand-orange mb-2">100</span>
+                  <span className="text-gray-700 font-medium">5 Star Reviews</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Certifications */}
       <section className="py-16">
@@ -123,34 +105,52 @@ const AboutPage = () => {
               K Skuse Electrical is fully licensed and certified to perform electrical work throughout Queensland.
             </p>
             
-            <div className="flex justify-center gap-8 flex-wrap">
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 w-64">
-                <div className="text-brand-orange mb-3">
-                  <ShieldCheck className="h-12 w-12 mx-auto" />
-                </div>
-                <h3 className="font-bold mb-2">Electrical Contractor License</h3>
-                <p className="text-sm text-gray-600">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
+              <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
+                <img 
+                  src="/lovable-uploads/qbcc.png" 
+                  alt="QBCC License" 
+                  className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
+                />
+                <h3 className="font-bold mb-2 text-sm md:text-base">QBCC License</h3>
+                <p className="text-xs md:text-sm text-gray-600">
                   Licensed electrical contractor in Queensland
                 </p>
               </div>
               
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 w-64">
-                <div className="text-brand-orange mb-3">
-                  <ShieldCheck className="h-12 w-12 mx-auto" />
-                </div>
-                <h3 className="font-bold mb-2">Fully Insured</h3>
-                <p className="text-sm text-gray-600">
-                  Comprehensive public liability insurance
+              <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
+                <img 
+                  src="/lovable-uploads/qldgov.png" 
+                  alt="QLD Government License" 
+                  className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
+                />
+                <h3 className="font-bold mb-2 text-sm md:text-base">QLD Government License</h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Government certified electrical contractor
                 </p>
               </div>
               
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 w-64">
-                <div className="text-brand-orange mb-3">
-                  <ShieldCheck className="h-12 w-12 mx-auto" />
-                </div>
-                <h3 className="font-bold mb-2">Safety Certified</h3>
-                <p className="text-sm text-gray-600">
-                  Adherence to all electrical safety standards
+              <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
+                <img 
+                  src="/lovable-uploads/ARC.jpg" 
+                  alt="ARC License" 
+                  className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
+                />
+                <h3 className="font-bold mb-2 text-sm md:text-base">ARC License</h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Authorized Refrigeration Contractor
+                </p>
+              </div>
+
+              <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
+                <img 
+                  src="/lovable-uploads/mea.png" 
+                  alt="MEA License" 
+                  className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
+                />
+                <h3 className="font-bold mb-2 text-sm md:text-base">MEA License</h3>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Master Electricians Australia Certified
                 </p>
               </div>
             </div>

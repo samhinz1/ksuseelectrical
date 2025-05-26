@@ -1,6 +1,6 @@
-
 import { useEffect, useState } from "react";
 import CallToAction from "@/components/CallToAction";
+import ContactForm from "@/components/ContactForm";
 
 interface FAQItem {
   question: string;
@@ -64,11 +64,17 @@ const FAQPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gray-50 py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
-            <p className="text-xl text-gray-600">
+      <section className="relative py-16 md:py-24">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/lovable-uploads/wiring.jpg')" }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">Frequently Asked Questions</h1>
+            <p className="text-xl text-white">
               Find answers to common questions about our electrical services.
             </p>
           </div>
@@ -78,60 +84,53 @@ const FAQPage = () => {
       {/* FAQ Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <div className="space-y-6">
-              {faqs.map((faq, index) => (
-                <div 
-                  key={index} 
-                  className="border border-gray-200 rounded-lg overflow-hidden"
-                >
-                  <button
-                    className={`w-full text-left p-5 flex justify-between items-center ${
-                      activeIndex === index ? "bg-gray-50" : "bg-white"
-                    }`}
-                    onClick={() => toggleFAQ(index)}
-                    aria-expanded={activeIndex === index}
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* FAQ Cards */}
+            <div className="lg:w-1/2">
+              <div className="space-y-2">
+                {faqs.map((faq, index) => (
+                  <div 
+                    key={index} 
+                    className="border border-gray-200 rounded-lg overflow-hidden mb-3"
                   >
-                    <span className="font-semibold text-lg">{faq.question}</span>
-                    <span className="ml-4 text-brand-orange">
-                      {activeIndex === index ? (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                      )}
-                    </span>
-                  </button>
-                  {activeIndex === index && (
-                    <div className="p-5 border-t border-gray-200 bg-white">
-                      <p className="text-gray-600">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    <button
+                      className={`w-full text-left p-3 flex justify-between items-center ${
+                        activeIndex === index ? "bg-gray-50" : "bg-white"
+                      }`}
+                      onClick={() => toggleFAQ(index)}
+                      aria-expanded={activeIndex === index}
+                    >
+                      <span className="font-semibold text-base">{faq.question}</span>
+                      <span className="ml-2 text-brand-orange">
+                        {activeIndex === index ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                          </svg>
+                        )}
+                      </span>
+                    </button>
+                    {activeIndex === index && (
+                      <div className="p-3 border-t border-gray-200 bg-white">
+                        <p className="text-gray-600 text-sm">{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="mt-12 text-center">
-              <h3 className="text-2xl font-bold mb-4">Still have questions?</h3>
-              <p className="text-gray-600 mb-6">
-                Contact us directly and we'll be happy to assist you with any inquiries.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <a 
-                  href="tel:0432351721"
-                  className="bg-brand-orange hover:bg-opacity-90 text-white px-6 py-3 rounded font-semibold transition-colors"
-                >
-                  Call: 0432 351 721
-                </a>
-                <a 
-                  href="mailto:kskuseelectrical@gmail.com"
-                  className="border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white px-6 py-3 rounded font-semibold transition-colors"
-                >
-                  Email Us
-                </a>
+            {/* Contact Form */}
+            <div className="lg:w-1/2">
+              <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border border-gray-100">
+                <h2 className="text-2xl font-bold mb-6">Still have questions?</h2>
+                <p className="text-gray-600 mb-6">
+                  Fill out the form below and we'll get back to you as soon as possible.
+                </p>
+                <ContactForm />
               </div>
             </div>
           </div>
