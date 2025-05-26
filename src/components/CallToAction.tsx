@@ -10,7 +10,7 @@ interface CTAProps {
 }
 
 const CallToAction = ({
-  title = "Need professional electrical services?",
+  title = "Need a professional electrician today?",
   subtitle = "Contact us today for a free quote or consultation",
   buttonText = "Get a Quote",
   buttonLink = "/contact",

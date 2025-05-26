@@ -5,6 +5,68 @@ import ServiceCard from "@/components/ServiceCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import CallToAction from "@/components/CallToAction";
 import { useState } from "react";
+import { useCenterHover } from "@/hooks/useCenterHover";
+import { ReactNode } from "react";
+
+const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const { elementRef, isInCenter } = useCenterHover();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return (
+    <div 
+      ref={isMobile ? elementRef : undefined}
+      className={`bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 ${
+        isMobile && isInCenter ? 'shadow-md border-brand-orange/20 -translate-y-1' : 'hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1'
+      }`}
+    >
+      <div className="flex items-center">
+        <div className={`mr-3 p-2 rounded-lg transition-all duration-200 ${
+          isMobile && isInCenter ? 'text-brand-orange bg-orange-50' : 'text-gray-600 group-hover:text-brand-orange group-hover:bg-orange-50'
+        }`}>
+          {icon}
+        </div>
+        <span className="font-semibold">{title}</span>
+      </div>
+    </div>
+  );
+};
+
+const BrandLogo = ({ src, alt }: { src: string; alt: string }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const { elementRef, isInCenter } = useCenterHover();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return (
+    <div ref={isMobile ? elementRef : undefined} className="flex items-center justify-center">
+      <img 
+        src={src} 
+        alt={alt} 
+        className={`h-16 object-contain filter transition-all duration-300 ${
+          isMobile && isInCenter ? 'grayscale-0 scale-110' : 'grayscale hover:grayscale-0 hover:scale-110'
+        }`}
+      />
+    </div>
+  );
+};
 
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -159,7 +221,7 @@ const HomePage = () => {
           <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
             <div className="lg:w-5/12">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Professional Electrical Services in Brisbane & Surrounds
+                Electrical Services SE Queensland Locals Trust
               </h1>
               <p className="text-xl mb-6">
                 Licensed, insured, and experienced electrician providing quality residential and commercial electrical services.
@@ -230,7 +292,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="md:w-1/2">
-              <h2 className="text-5xl font-bold mb-4">Brisbane's Trusted Electrician</h2>
+              <h2 className="text-5xl font-bold mb-4">Brisbane's #1 Trusted Electrician</h2>
               <p className="text-gray-700 mb-6">
                 K Skuse Electrical is committed to providing safe, reliable, and high-quality electrical solutions for homes and businesses throughout Brisbane and SE Queensland.
               </p>
@@ -238,54 +300,12 @@ const HomePage = () => {
                 With years of experience and a dedication to customer satisfaction, we handle projects of all sizes with professionalism and expertise.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <ShieldCheck className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">Licensed & Insured</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <AlarmClock className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">24/7 Emergency Service</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <Zap className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">Quality Workmanship</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <Building className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">15+ Years Experience</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <Home className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">Local & Reliable</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <div className="mr-3 text-brand-orange bg-orange-50 p-2 rounded-lg">
-                      <Star className="h-6 w-6" />
-                    </div>
-                    <span className="font-semibold">5 Star Google Reviews</span>
-                  </div>
-                </div>
+                <FeatureCard icon={<ShieldCheck className="h-6 w-6" />} title="Licensed & Insured" />
+                <FeatureCard icon={<AlarmClock className="h-6 w-6" />} title="24/7 Emergency Service" />
+                <FeatureCard icon={<Zap className="h-6 w-6" />} title="Quality Workmanship" />
+                <FeatureCard icon={<Building className="h-6 w-6" />} title="15+ Years Experience" />
+                <FeatureCard icon={<Home className="h-6 w-6" />} title="Local & Reliable" />
+                <FeatureCard icon={<Star className="h-6 w-6" />} title="5 Star Google Reviews" />
               </div>
               <Link
                 to="/about"
@@ -317,7 +337,7 @@ const HomePage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Electrical Services</h2>
+            <h2 className="text-5xl font-bold mb-4">Our Electrical Services</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               From residential repairs to commercial installations, we provide a comprehensive range of electrical services to meet your needs.
             </p>
@@ -350,7 +370,7 @@ const HomePage = () => {
       <section className="py-16 bg-brand-orange">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-white">Customer Reviews</h2>
+            <h2 className="text-5xl font-bold mb-4 text-white">Customer Reviews</h2>
             <p className="text-white/90 max-w-2xl mx-auto">
               See what our customers are saying about us across different platforms. We're proud of our 5-star ratings!
             </p>
@@ -409,30 +429,25 @@ const HomePage = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center justify-items-center">
-            <img 
+            <BrandLogo 
               src="/lovable-uploads/Schneider_Electric_2007.svg" 
               alt="Schneider Electric" 
-              className="h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
             />
-            <img 
+            <BrandLogo 
               src="/lovable-uploads/philips.png" 
               alt="Philips" 
-              className="h-32 object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
             />
-            <img 
+            <BrandLogo 
               src="/lovable-uploads/HPM-LOGO.jpg" 
               alt="HPM" 
-              className="h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
             />
-            <img 
+            <BrandLogo 
               src="/lovable-uploads/clipsal-logo.png" 
               alt="Clipsal" 
-              className="h-32 object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
             />
-            <img 
+            <BrandLogo 
               src="/lovable-uploads/arlec.png" 
               alt="Arlec" 
-              className="h-16 object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
             />
           </div>
         </div>

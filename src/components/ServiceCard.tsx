@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useCenterHover } from "@/hooks/useCenterHover";
 
 interface ServiceCardProps {
   title: string;
@@ -9,7 +10,20 @@ interface ServiceCardProps {
   link: string;
 }
 
-const ServiceCard = ({ title, icon, link }: ServiceCardProps) => {
+const ServiceCard = ({ title, description, longDescription, icon, link }: ServiceCardProps) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const { elementRef, isInCenter } = useCenterHover();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const getServicePoints = (serviceTitle: string) => {
     switch (serviceTitle) {
       case "Residential Electrical":
@@ -45,15 +59,78 @@ const ServiceCard = ({ title, icon, link }: ServiceCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-brand-orange">
-      <Link to={link} onClick={() => window.scrollTo(0, 0)}>
-        <div className="mb-4 text-brand-orange">{icon}</div>
-        <h3 className="text-xl font-bold mb-3">{title}</h3>
-        <ul className="list-disc list-inside text-gray-600 space-y-1">
-          {getServicePoints(title).map((point, index) => (
-            <li key={index}>{point}</li>
-          ))}
-        </ul>
+    <div 
+      ref={isMobile ? elementRef : undefined}
+      className="group bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20 hover:-translate-y-1"
+    >
+      <Link to={link} className="block p-6" onClick={() => window.scrollTo(0, 0)}>
+        <div className="flex items-center mb-4">
+          <div className="relative w-12 h-12">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className={`transform transition-all duration-300 ${
+                isMobile && isInCenter ? 'scale-110 text-brand-orange' : 'text-gray-600 group-hover:text-brand-orange group-hover:scale-110'
+              }`}>
+                {icon}
+              </div>
+            </div>
+          </div>
+          <h3 className={`ml-4 text-xl font-semibold transition-colors duration-300 ${
+            isMobile && isInCenter ? 'text-brand-orange' : 'text-brand-black group-hover:text-brand-orange'
+          }`}>
+            {title}
+          </h3>
+        </div>
+        <p className="text-gray-600 mb-4">{description}</p>
+        <div className="space-y-2">
+          {title === "Residential Electrical" && (
+            <>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Lighting Installation
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Power Point Upgrades
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Safety Inspections
+              </p>
+            </>
+          )}
+          {title === "Commercial Services" && (
+            <>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Office Fit-outs
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Retail Installations
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Industrial Electrical
+              </p>
+            </>
+          )}
+          {title === "Emergency Services" && (
+            <>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                24/7 Availability
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Rapid Response
+              </p>
+              <p className="flex items-center text-sm text-gray-600">
+                <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2"></span>
+                Safety First
+              </p>
+            </>
+          )}
+        </div>
       </Link>
     </div>
   );

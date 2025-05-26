@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -54,42 +53,45 @@ const Navbar = () => {
         </nav>
 
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden p-2 text-brand-black hover:text-brand-orange"
+        <button
+          className="md:hidden p-2 text-brand-black hover:text-brand-orange transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
       
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <nav className="flex flex-col py-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`px-4 py-3 font-semibold transition-colors hover:bg-gray-100 ${
-                  location.pathname === link.path ? "text-brand-orange" : "text-brand-black"
-                }`}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  window.scrollTo(0, 0);
-                }}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <a 
-              href="tel:0432351721"
-              className="mx-4 mt-3 bg-brand-orange text-white px-4 py-3 rounded text-center font-semibold hover:bg-opacity-90 transition-all"
+      <div 
+        className={`md:hidden bg-white border-t border-gray-200 overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <nav className="flex flex-col py-4">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              to={link.path}
+              className={`px-4 py-3 font-semibold transition-colors hover:bg-gray-100 ${
+                location.pathname === link.path ? "text-brand-orange" : "text-brand-black"
+              }`}
+              onClick={() => {
+                setIsMenuOpen(false);
+                window.scrollTo(0, 0);
+              }}
             >
-              Call Now: 0432 351 721
-            </a>
-          </nav>
-        </div>
-      )}
+              {link.name}
+            </Link>
+          ))}
+          <a 
+            href="tel:0432351721"
+            className="mx-4 mt-3 bg-brand-orange text-white px-4 py-3 rounded text-center font-semibold hover:bg-opacity-90 transition-all"
+          >
+            Call Now: 0432 351 721
+          </a>
+        </nav>
+      </div>
     </header>
   );
 };
