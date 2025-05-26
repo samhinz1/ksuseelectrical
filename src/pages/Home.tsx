@@ -7,6 +7,7 @@ import CallToAction from "@/components/CallToAction";
 import { useState } from "react";
 import { useCenterHover } from "@/hooks/useCenterHover";
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -385,9 +386,19 @@ const HomePage = () => {
               <ChevronLeft className="h-8 w-8 text-brand-orange" />
             </button>
             <div className="overflow-hidden">
-              <div 
-                className="flex will-change-transform transition-transform duration-300 ease-out"
-                style={{ transform: `translateX(-${currentSlide * (100 / reviewsPerPage)}%)` }}
+              <motion.div 
+                className="flex"
+                style={{ 
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden'
+                }}
+                animate={{ x: `${-currentSlide * (100 / reviewsPerPage)}%` }}
+                transition={{ 
+                  type: "tween",
+                  duration: 0.3,
+                  ease: "easeInOut"
+                }}
               >
                 {testimonials.map((testimonial, index) => (
                   <div 
@@ -395,8 +406,9 @@ const HomePage = () => {
                     className="w-full flex-shrink-0 px-4"
                     style={{ 
                       width: `${100 / reviewsPerPage}%`,
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden'
+                      willChange: 'transform',
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden'
                     }}
                   >
                     <TestimonialCard
@@ -409,7 +421,7 @@ const HomePage = () => {
                     />
                   </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
             <button
               onClick={nextSlide}
