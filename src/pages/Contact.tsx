@@ -14,7 +14,7 @@ const ContactPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url("https://images.pexels.com/photos/9242887/pexels-photo-9242887.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")',
+            backgroundImage: 'url("/lovable-uploads/board.webp")',
           }}
         >
           <div className="absolute inset-0 bg-black/50" /> {/* Dark overlay for better text visibility */}

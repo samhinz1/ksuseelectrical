@@ -218,7 +218,7 @@ const HomePage = () => {
     <>
       {/* Hero Section */}
       <section className="relative bg-gray-900 text-white">
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/2516657/pexels-photo-2516657.jpeg')] bg-cover bg-bottom opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('/lovable-uploads/brisbaneriver.webp')] bg-cover bg-bottom opacity-20"></div>
         <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
           <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
             <div className="lg:w-5/12">
