@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin, Home, Facebook } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -62,10 +62,9 @@ const Footer = () => {
               <li>
                 <Link 
                   to="/"
-                  className="hover:text-brand-orange transition-colors flex items-center gap-2"
+                  className="hover:text-brand-orange transition-colors"
                   onClick={() => window.scrollTo(0, 0)}
                 >
-                  <Home size={16} />
                   Home
                 </Link>
               </li>
@@ -111,7 +110,7 @@ const Footer = () => {
           {/* Payment Methods */}
           <div className="md:col-span-1">
             <h3 className="font-heading font-bold text-xl mb-6">Payment Methods</h3>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-col gap-y-4 items-start">
               <img 
                 src={`${import.meta.env.BASE_URL}lovable-uploads/visa-svgrepo-com.svg`} 
                 alt="Visa" 
@@ -125,7 +124,7 @@ const Footer = () => {
               <img 
                 src={`${import.meta.env.BASE_URL}lovable-uploads/paypal-svgrepo-com.svg`} 
                 alt="PayPal" 
-                className="h-32 w-auto -mt-8"
+                className="h-32 w-auto -mt-12 -ml-2"
               />
             </div>
           </div>
