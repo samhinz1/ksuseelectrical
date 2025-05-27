@@ -15,7 +15,7 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: `url("${import.meta.env.BASE_URL}lovable-uploads/pole.avif")`,
+            backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/pole.webp')`,
             backgroundSize: '100%',
             backgroundPosition: 'center center'
           }}
