@@ -38,7 +38,7 @@ const AboutPage = () => {
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <div className="md:w-1/2">
               <img
-                src="/lovable-uploads/kskusephot.webp"
+                src={`${import.meta.env.BASE_URL}lovable-uploads/kskusephot.webp`}
                 alt="Professional Electrician"
                 className="rounded-lg shadow-lg w-3/4 h-auto object-cover"
               />
@@ -99,7 +99,7 @@ const AboutPage = () => {
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/qbcc.webp" 
+                  src={`${import.meta.env.BASE_URL}lovable-uploads/qbcc.webp`} 
                   alt="QBCC License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -111,7 +111,7 @@ const AboutPage = () => {
               
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/qldgov.webp" 
+                  src={`${import.meta.env.BASE_URL}lovable-uploads/qldgov.webp`} 
                   alt="QLD Government License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -123,7 +123,7 @@ const AboutPage = () => {
               
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/ARC.webp" 
+                  src={`${import.meta.env.BASE_URL}lovable-uploads/ARC.webp`} 
                   alt="ARC License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />
@@ -135,7 +135,7 @@ const AboutPage = () => {
 
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-200 w-[calc(50%-1rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(25%-2rem)]">
                 <img 
-                  src="/lovable-uploads/mea.webp" 
+                  src={`${import.meta.env.BASE_URL}lovable-uploads/mea.webp`} 
                   alt="MEA License" 
                   className="h-24 md:h-32 w-auto mx-auto mb-4 object-contain"
                 />

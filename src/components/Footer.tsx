@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="md:col-span-1">
             <img 
-              src="/lovable-uploads/4f914164-4f5c-48d4-944a-98e072a479e8.png" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/4f914164-4f5c-48d4-944a-98e072a479e8.png`} 
               alt="K Skuse Electrical Logo" 
               className="h-16 mb-4" 
             />
@@ -113,17 +113,17 @@ const Footer = () => {
             <h3 className="font-heading font-bold text-xl mb-6">Payment Methods</h3>
             <div className="flex flex-wrap gap-6">
               <img 
-                src="/lovable-uploads/visa-svgrepo-com.svg" 
+                src={`${import.meta.env.BASE_URL}lovable-uploads/visa-svgrepo-com.svg`} 
                 alt="Visa" 
                 className="h-16 w-auto"
               />
               <img 
-                src="/lovable-uploads/mastercard-2-logo-svgrepo-com.svg" 
+                src={`${import.meta.env.BASE_URL}lovable-uploads/mastercard-2-logo-svgrepo-com.svg`} 
                 alt="Mastercard" 
                 className="h-16 w-auto"
               />
               <img 
-                src="/lovable-uploads/paypal-svgrepo-com.svg" 
+                src={`${import.meta.env.BASE_URL}lovable-uploads/paypal-svgrepo-com.svg`} 
                 alt="PayPal" 
                 className="h-32 w-auto -mt-8"
               />

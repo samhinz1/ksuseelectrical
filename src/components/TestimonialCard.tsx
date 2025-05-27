@@ -20,13 +20,13 @@ const TestimonialCard = ({
   const getSourceIcon = () => {
     switch (source) {
       case "Google":
-        return "/lovable-uploads/google-2015-seeklogo.png";
+        return `${import.meta.env.BASE_URL}lovable-uploads/google-2015-seeklogo.png`;
       case "Hipages":
-        return "/lovable-uploads/hi-pages-seeklogo.svg";
+        return `${import.meta.env.BASE_URL}lovable-uploads/hi-pages-seeklogo.svg`;
       case "Yellow Pages":
-        return "/lovable-uploads/yellow-pages-turkey-seeklogo.png";
+        return `${import.meta.env.BASE_URL}lovable-uploads/yellow-pages-turkey-seeklogo.png`;
       default:
-        return "/lovable-uploads/google-2015-seeklogo.png";
+        return `${import.meta.env.BASE_URL}lovable-uploads/google-2015-seeklogo.png`;
     }
   };
 

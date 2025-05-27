@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center" onClick={() => window.scrollTo(0, 0)}>
           <img 
-            src="/lovable-uploads/4f914164-4f5c-48d4-944a-98e072a479e8.png" 
+            src={`${import.meta.env.BASE_URL}lovable-uploads/4f914164-4f5c-48d4-944a-98e072a479e8.png`} 
             alt="K Skuse Electrical Logo" 
             className="h-12 md:h-16" 
           />

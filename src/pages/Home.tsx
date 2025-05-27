@@ -132,7 +132,7 @@ const HomePage = () => {
       author: "Sarah Johnson",
       location: "Norman Park, Brisbane",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile1.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile1.webp`,
       source: "Google"
     },
     {
@@ -140,7 +140,7 @@ const HomePage = () => {
       author: "David Chen",
       location: "Coorparoo",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile2.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile2.webp`,
       source: "Hipages"
     },
     {
@@ -148,7 +148,7 @@ const HomePage = () => {
       author: "Lisa Anderson",
       location: "Camp Hill",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile3.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile3.webp`,
       source: "Yellow Pages"
     },
     {
@@ -156,7 +156,7 @@ const HomePage = () => {
       author: "Mark Thompson",
       location: "South Brisbane",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile4.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile4.webp`,
       source: "Google"
     },
     {
@@ -164,7 +164,7 @@ const HomePage = () => {
       author: "Michael Brown",
       location: "Hawthorne",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile5.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile5.webp`,
       source: "Hipages"
     },
     {
@@ -172,7 +172,7 @@ const HomePage = () => {
       author: "Emma Wilson",
       location: "Bulimba",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile6.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile6.webp`,
       source: "Google"
     },
     {
@@ -180,7 +180,7 @@ const HomePage = () => {
       author: "Rachel Green",
       location: "East Brisbane",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile1.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile1.webp`,
       source: "Yellow Pages"
     },
     {
@@ -188,7 +188,7 @@ const HomePage = () => {
       author: "James Wilson",
       location: "Fortitude Valley",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile8.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile8.webp`,
       source: "Hipages"
     },
     {
@@ -196,7 +196,7 @@ const HomePage = () => {
       author: "Sophie Taylor",
       location: "New Farm",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile9.webp",
+      profilePhoto: `${import.meta.env.BASE_URL}lovable-uploads/profile9.webp`,
       source: "Yellow Pages"
     }
   ];
@@ -218,7 +218,10 @@ const HomePage = () => {
     <>
       {/* Hero Section */}
       <section className="relative bg-gray-900 text-white">
-        <div className="absolute inset-0 bg-[url('/lovable-uploads/brisbaneriver.webp')] bg-cover bg-bottom opacity-20"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-bottom opacity-20"
+          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/brisbaneriver.webp')` }}
+        ></div>
         <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
           <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
             <div className="lg:w-5/12">
@@ -457,23 +460,23 @@ const HomePage = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center justify-items-center">
             <BrandLogo 
-              src="/lovable-uploads/Schneider_Electric_2007.svg" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/Schneider_Electric_2007.svg`} 
               alt="Schneider Electric" 
             />
             <BrandLogo 
-              src="/lovable-uploads/philips.webp" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/philips.webp`} 
               alt="Philips" 
             />
             <BrandLogo 
-              src="/lovable-uploads/HPM-LOGO.webp" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/HPM-LOGO.webp`} 
               alt="HPM" 
             />
             <BrandLogo 
-              src="/lovable-uploads/clipsal-logo.webp" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/clipsal-logo.webp`} 
               alt="Clipsal" 
             />
             <BrandLogo 
-              src="/lovable-uploads/arlec.webp" 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/arlec.webp`} 
               alt="Arlec" 
             />
           </div>

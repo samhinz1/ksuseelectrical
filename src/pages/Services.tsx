@@ -203,7 +203,7 @@ const ServicesPage = () => {
       <section className="relative bg-gray-50 py-16 md:py-24">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/lovable-uploads/electrician1.webp')" }}
+          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/electrician1.webp')` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         </div>

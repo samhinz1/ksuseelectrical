@@ -14,7 +14,7 @@ const ContactPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url("/lovable-uploads/board.webp")',
+            backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/board.webp')`,
           }}
         >
           <div className="absolute inset-0 bg-black/50" /> {/* Dark overlay for better text visibility */}
