@@ -180,7 +180,7 @@ const HomePage = () => {
       author: "Rachel Green",
       location: "East Brisbane",
       rating: 5,
-      profilePhoto: "/lovable-uploads/profile7.webp",
+      profilePhoto: "/lovable-uploads/profile1.webp",
       source: "Yellow Pages"
     },
     {
