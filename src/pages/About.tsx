@@ -11,19 +11,15 @@ const AboutPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative bg-gray-50 py-16 md:py-24">
+      <section className="relative py-16 md:py-24">
         <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/pole.webp')`,
-            backgroundSize: '100%',
-            backgroundPosition: 'center center'
-          }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/pole.webp')` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         </div>
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl text-left pl-4 md:pl-12">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">About K Skuse Electrical</h1>
             <p className="text-xl text-gray-200">
               Licensed electrician with 10+ years of experience serving Brisbane and SE Queensland.
