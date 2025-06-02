@@ -417,42 +417,24 @@ const HomePage = () => {
           <div className="relative">
             <button
               onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center"
+              disabled={currentSlide === 0}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center ${
+                currentSlide === 0 ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               aria-label="Previous reviews"
             >
               <ChevronLeft className="h-8 w-8 text-brand-orange" />
             </button>
-            <div className="overflow-hidden" style={{ 
-              transform: 'translateZ(0)',
-              willChange: 'transform',
-              backfaceVisibility: 'hidden'
-            }}>
-              <motion.div 
-                className="flex"
-                style={{ 
-                  willChange: 'transform',
-                  transform: 'translateZ(0)',
-                  backfaceVisibility: 'hidden',
-                  contain: 'paint layout'
-                }}
-                animate={{ x: `${-currentSlide * (100 / reviewsPerPage)}%` }}
-                transition={{ 
-                  type: "tween",
-                  duration: 0.3,
-                  ease: "easeInOut"
-                }}
+            <div className="overflow-hidden">
+              <div 
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * (100 / reviewsPerPage)}%)` }}
               >
                 {testimonials.map((testimonial, index) => (
                   <div 
                     key={index} 
-                    className="w-full flex-shrink-0 px-4"
-                    style={{ 
-                      width: `${100 / reviewsPerPage}%`,
-                      willChange: 'transform',
-                      transform: 'translateZ(0)',
-                      backfaceVisibility: 'hidden',
-                      contain: 'paint layout'
-                    }}
+                    className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-4"
+                    style={{ minWidth: `${100 / reviewsPerPage}%` }}
                   >
                     <TestimonialCard
                       quote={testimonial.quote}
@@ -464,11 +446,14 @@ const HomePage = () => {
                     />
                   </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
             <button
               onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center"
+              disabled={currentSlide >= maxSlide}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-colors z-10 flex items-center justify-center ${
+                currentSlide >= maxSlide ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               aria-label="Next reviews"
             >
               <ChevronRight className="h-8 w-8 text-brand-orange" />
