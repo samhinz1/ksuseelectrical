@@ -345,32 +345,26 @@ const HomePage = () => {
               </Link>
             </div>
             <div className="md:w-1/2">
-              <div style={{ 
-                height: 400, 
-                width: '100%', 
-                overflow: 'hidden', 
-                borderRadius: '0.5rem', 
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                transform: 'translateZ(0)',
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                position: 'relative'
-              }}>
-                <iframe
-                  src="https://www.google.com/maps/d/embed?mid=1ekplzd_z2OlqC-i6_rzzcQO2OVX2YzA&ehbc=2E312F"
-                  width="100%"
-                  height="480"
-                  style={{ 
-                    border: 0, 
-                    marginTop: '-70px',
-                    position: 'absolute',
-                    transform: 'translateZ(0)'
-                  }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Brisbane and Gold Coast Service Area Highlighted"
-                ></iframe>
+              {/* Map container with overflow hidden to crop the top */}
+              <div className="bg-gray-100 rounded-lg shadow-md mb-4">
+                <div 
+                  className="w-full h-[400px] overflow-hidden" 
+                  id="map-container"
+                >
+                  <iframe
+                    src="https://www.google.com/maps/d/embed?mid=1ekplzd_z2OlqC-i6_rzzcQO2OVX2YzA&ehbc=2E312F"
+                    width="100%" 
+                    height="500"
+                    style={{
+                      marginTop: "-70px", 
+                      border: "none"
+                    }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Brisbane and Gold Coast Service Area Highlighted"
+                  ></iframe>
+                </div>
               </div>
             </div>
           </div>
