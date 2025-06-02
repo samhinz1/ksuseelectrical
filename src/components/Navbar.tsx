@@ -20,7 +20,11 @@ const Navbar = () => {
   ];
   
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-md">
+    <header className="fixed top-0 z-50 w-full bg-white shadow-md" style={{ 
+      transform: 'translateZ(0)',
+      willChange: 'transform',
+      backfaceVisibility: 'hidden'
+    }}>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center" onClick={() => window.scrollTo(0, 0)}>
           <img 

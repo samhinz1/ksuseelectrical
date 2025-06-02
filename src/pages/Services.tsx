@@ -1,198 +1,241 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, Home, Building, Plug, ShieldCheck, AlarmClock, Power, House, Cable, Lightbulb, Settings, Bell, ChevronDown } from "lucide-react";
+import { Zap, Home, Building, Plug, ShieldCheck, AlarmClock, Power, House, Cable, Lightbulb, Settings, Bell, ChevronDown, Anchor, Stethoscope, Store } from "lucide-react";
 import CallToAction from "@/components/CallToAction";
 
-interface ServiceItemProps {
+interface ServiceCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  benefits: string[];
+  examples: string[];
+  photo?: string;
 }
 
-const ServiceItem = ({ icon, title, description, benefits }: ServiceItemProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const ServiceCard = ({ icon, title, description, examples, photo }: ServiceCardProps) => {
   return (
-    <div 
-      className="bg-white rounded-lg shadow-md border-t-4 border-brand-orange overflow-hidden transition-all duration-300"
-      style={{ maxHeight: isOpen ? '1000px' : '80px' }}
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors"
-      >
-        <div className="flex items-center gap-4">
-          <div className="text-brand-orange">{icon}</div>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-all duration-300 hover:border-brand-orange/20 hover:-translate-y-1 h-full flex flex-col">
+      {photo && (
+        <div className="w-full h-48 overflow-hidden">
+          <img 
+            src={photo} 
+            alt={title} 
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+      )}
+      <div className="p-6 flex-grow flex flex-col">
+        <div className="flex items-start mb-4">
+          <div className="text-brand-orange shrink-0 mr-3 p-2 rounded-lg bg-orange-50">
+            {icon}
+          </div>
           <h3 className="text-xl font-bold">{title}</h3>
         </div>
-        <ChevronDown 
-          className={`h-6 w-6 text-gray-500 transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
-      <div className={`px-6 pb-6 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-        <p className="text-gray-600 mb-4">{description}</p>
-        <h4 className="font-semibold mb-2">Benefits:</h4>
-        <ul className="space-y-2">
-          {benefits.map((benefit, index) => (
-            <li key={index} className="flex items-start">
-              <span className="text-brand-orange mr-2">•</span>
-              <span className="text-gray-600">{benefit}</span>
-            </li>
-          ))}
-        </ul>
+        <p className="text-gray-600 mb-4 text-sm">{description}</p>
+        <div className="mt-auto">
+          <h4 className="font-semibold mb-2 text-sm">Examples:</h4>
+          <ul className="space-y-1">
+            {examples.map((example, index) => (
+              <li key={index} className="flex items-start">
+                <span className="text-brand-orange mr-2 shrink-0">•</span>
+                <span className="text-gray-600 text-xs">{example}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
 };
 
 const ServicesPage = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const categories = [
-    { id: 'all', name: 'All Services' },
-    { id: 'residential', name: 'Residential' },
-    { id: 'commercial', name: 'Commercial' },
-    { id: 'specialized', name: 'Specialized' }
-  ];
-
   const services = [
     {
-      icon: <Home className="h-10 w-10" />,
-      title: "Residential Electrical Services",
+      icon: <Home className="h-6 w-6" />,
+      title: "Residential Services",
       description: "Complete electrical solutions for your home, from minor repairs to full installations.",
       category: "residential",
-      benefits: [
-        "Increased home safety with up-to-code electrical systems",
-        "Energy-efficient solutions to reduce power bills",
-        "Enhanced home functionality and convenience",
-        "Expert advice on electrical improvements"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/residential.webp`,
+      examples: [
+        "Kitchen & bathroom electrical installations",
+        "Living space lighting & power upgrades",
+        "Home office electrical setups",
+        "Ceiling fan & air conditioning wiring"
       ]
     },
     {
-      icon: <Building className="h-10 w-10" />,
-      title: "Commercial Electrical Services",
+      icon: <Building className="h-6 w-6" />,
+      title: "Industrial Fitouts",
       description: "Professional electrical solutions for businesses of all sizes.",
       category: "commercial",
-      benefits: [
-        "Minimize business downtime with efficient service",
-        "Custom solutions designed for your business needs",
-        "Regular maintenance to prevent costly emergencies",
-        "Code-compliant installations and upgrades"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/commercial.webp`,
+      examples: [
+        "Factory & warehouse electrical systems",
+        "Industrial machinery connections",
+        "3-phase power installations",
+        "Machine shop wiring"
       ]
     },
     {
-      icon: <Lightbulb className="h-10 w-10" />,
+      icon: <Store className="h-6 w-6" />,
+      title: "Commercial Fitouts",
+      description: "Specialized electrical solutions for retail, office, and commercial spaces.",
+      category: "commercial",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/commercialfitout.webp`,
+      examples: [
+        "Restaurant & café electrical installations",
+        "Retail shop lighting & power systems",
+        "Office fitouts & workstation wiring",
+        "Bar & entertainment venue setups"
+      ]
+    },
+    {
+      icon: <Anchor className="h-6 w-6" />,
+      title: "Marine Electrical",
+      description: "Specialized electrical services for boats, yachts, and marine environments.",
+      category: "specialized",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/boat.webp`,
+      examples: [
+        "Boat & yacht electrical system installation",
+        "Marina power connection setups",
+        "Navigation lighting & instrumentation",
+        "Marine battery & inverter systems"
+      ]
+    },
+    {
+      icon: <Stethoscope className="h-6 w-6" />,
+      title: "Medical Facilities",
+      description: "Specialized electrical solutions for medical offices, clinics, and healthcare facilities.",
+      category: "specialized",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/medical.webp`,
+      examples: [
+        "Dental clinic electrical installations",
+        "Medical office power & lighting",
+        "X-ray room electrical setups",
+        "Medical equipment power supply"
+      ]
+    },
+    {
+      icon: <Lightbulb className="h-6 w-6" />,
       title: "Lighting Installation",
       description: "Expert installation of indoor and outdoor lighting systems to enhance your space.",
-      benefits: [
-        "Enhanced aesthetics and ambiance",
-        "Energy-efficient lighting options",
-        "Improved visibility and safety",
-        "Smart lighting solutions available"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/lights.webp`,
+      examples: [
+        "Recessed downlight installation",
+        "LED strip & feature lighting",
+        "Outdoor & garden lighting setups",
+        "Smart lighting system installation"
       ]
     },
     {
-      icon: <Plug className="h-10 w-10" />,
+      icon: <Plug className="h-6 w-6" />,
       title: "Power Points & Switches",
       description: "Installation of new power points, switches and circuit upgrades for your property.",
-      benefits: [
-        "Increased convenience with strategically placed outlets",
-        "Modern USB-integrated power points available",
-        "Safer, updated electrical components",
-        "Custom solutions based on your needs"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/powerpoint2.webp`,
+      examples: [
+        "USB power point installation",
+        "Kitchen & bathroom GPOs",
+        "Outdoor weather-protected outlets",
+        "Smart switch & dimmer installation"
       ]
     },
     {
-      icon: <Power className="h-10 w-10" />,
+      icon: <Power className="h-6 w-6" />,
       title: "Mains & Underground Mains",
       description: "Professional installation and upgrades of main power connections and underground electrical systems.",
-      benefits: [
-        "Safe and compliant main power installations",
-        "Expert underground cable laying",
-        "Proper trenching and conduit installation",
-        "Compliance with all local regulations"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/breakers.webp`,
+      examples: [
+        "Mains power upgrades & replacements",
+        "Underground cable installation",
+        "Switchboard upgrades & installations",
+        "Property power supply connections"
       ]
     },
     {
-      icon: <House className="h-10 w-10" />,
+      icon: <House className="h-6 w-6" />,
       title: "Renovations",
       description: "Complete electrical solutions for home and commercial renovations.",
-      benefits: [
-        "Full rewiring services for renovations",
-        "Modern electrical system integration",
-        "Code-compliant upgrades",
-        "Minimal disruption during renovation"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/renovation.webp`,
+      examples: [
+        "Kitchen & bathroom renovations",
+        "Home extension electrical work",
+        "Commercial space refurbishments",
+        "Historic building electrical updates"
       ]
     },
     {
-      icon: <Zap className="h-10 w-10" />,
+      icon: <Zap className="h-6 w-6" />,
       title: "Generators",
       description: "Installation and maintenance of backup power systems and generators.",
-      benefits: [
-        "Reliable backup power solutions",
-        "Automatic transfer switch installation",
-        "Regular maintenance services",
-        "Emergency power system design"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/generator.webp`,
+      examples: [
+        "Home backup generator installation",
+        "Commercial emergency power systems",
+        "Rural property power solutions",
+        "Portable generator setups"
       ]
     },
     {
-      icon: <Settings className="h-10 w-10" />,
+      icon: <Settings className="h-6 w-6" />,
       title: "Maintenance",
       description: "Comprehensive electrical maintenance services to keep your systems running smoothly.",
-      benefits: [
-        "Preventive maintenance programs",
-        "Regular safety inspections",
-        "System performance optimization",
-        "Extended equipment lifespan"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/powerpoint (1).webp`,
+      examples: [
+        "Regular electrical system inspections",
+        "Switchboard maintenance & testing",
+        "Commercial property maintenance",
+        "Safety switch testing & maintenance"
       ]
     },
     {
-      icon: <Bell className="h-10 w-10" />,
+      icon: <Bell className="h-6 w-6" />,
       title: "Smoke Detectors",
       description: "Installation and maintenance of smoke alarms to comply with safety regulations.",
-      benefits: [
-        "Compliance with Queensland smoke alarm legislation",
-        "Enhanced home safety for your family",
-        "Regular testing and maintenance",
-        "Expert advice on optimal placement"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/smokealarm.webp`,
+      examples: [
+        "Hardwired smoke alarm installation",
+        "Interconnected smoke detector systems",
+        "Rental property compliance upgrades",
+        "Smoke alarm replacement & testing"
       ]
     },
     {
-      icon: <Zap className="h-10 w-10" />,
+      icon: <Zap className="h-6 w-6" />,
       title: "Fault Finding",
       description: "Professional diagnosis and repair of electrical issues and faults.",
-      benefits: [
-        "Accurate identification of complex electrical problems",
-        "Efficient solutions to minimize disruption",
-        "Prevent recurrence of issues",
-        "Comprehensive repairs, not just symptom treatment"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/emergency.webp`,
+      examples: [
+        "Circuit overload troubleshooting",
+        "Power outage investigation",
+        "Electrical appliance fault finding",
+        "Intermittent power issue diagnosis"
       ]
     },
     {
-      icon: <ShieldCheck className="h-10 w-10" />,
+      icon: <ShieldCheck className="h-6 w-6" />,
       title: "CCTV Installation",
       description: "Professional installation of security camera systems for homes and businesses.",
-      benefits: [
-        "Custom security system design",
-        "High-quality camera installation",
-        "Remote monitoring setup",
-        "Integration with existing systems"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/cctv.webp`,
+      examples: [
+        "Home security camera installation",
+        "Business surveillance systems",
+        "Remote viewing camera setups",
+        "Wired & wireless CCTV systems"
       ]
     },
     {
-      icon: <Settings className="h-10 w-10" />,
+      icon: <Settings className="h-6 w-6" />,
       title: "Air Conditioning Installation",
       description: "Expert installation of air conditioning systems with electrical integration.",
-      benefits: [
-        "Professional AC unit installation",
-        "Electrical system integration",
-        "Energy-efficient solutions",
-        "Compliance with safety standards"
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/servicecards/aircon.webp`,
+      examples: [
+        "Split system A/C installation",
+        "Ducted air conditioning wiring",
+        "Multi-head system electrical setup",
+        "Commercial HVAC electrical work"
       ]
     }
   ];
@@ -221,6 +264,7 @@ const ServicesPage = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-12 text-center">
+            <h2 className="text-3xl font-bold mb-6 text-center">No Job Too Big or Small</h2>
             <p className="text-lg text-gray-700 mb-4">
               At K SKUSE Electrical, we pride ourselves on delivering comprehensive electrical solutions that combine technical expertise with exceptional customer service. Our team of licensed electricians brings years of experience to every project, ensuring that your electrical needs are met with the highest standards of safety, quality, and efficiency.
             </p>
@@ -228,14 +272,18 @@ const ServicesPage = () => {
               Whether you're looking to upgrade your home's electrical system, need emergency repairs, or require commercial electrical services, we offer a full range of solutions tailored to your specific requirements. From new installations to maintenance and repairs, our commitment to excellence and attention to detail ensures that every job is completed to your complete satisfaction.
             </p>
           </div>
-          <div className="max-w-4xl mx-auto">
+          
+
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
-              <ServiceItem
+              <ServiceCard
                 key={index}
                 icon={service.icon}
                 title={service.title}
                 description={service.description}
-                benefits={service.benefits}
+                examples={service.examples}
+                photo={service.photo}
               />
             ))}
           </div>

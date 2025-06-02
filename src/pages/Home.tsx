@@ -29,6 +29,11 @@ const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
       className={`bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 ${
         isMobile && isInCenter ? 'shadow-md border-brand-orange/20 -translate-y-1' : 'hover:shadow-md hover:border-brand-orange/20 hover:-translate-y-1'
       }`}
+      style={{ 
+        transform: 'translateZ(0)',
+        willChange: 'transform',
+        backfaceVisibility: 'hidden'
+      }}
     >
       <div className="flex items-center">
         <div className="mr-3 p-2 rounded-lg text-brand-orange bg-orange-50">
@@ -58,7 +63,13 @@ const BrandLogo = ({ src, alt }: { src: string; alt: string }) => {
   const isLargeLogo = alt === "Philips" || alt === "Clipsal";
 
   return (
-    <div ref={isMobile ? elementRef : undefined} className="flex items-center justify-center">
+    <div ref={isMobile ? elementRef : undefined} className="flex items-center justify-center"
+      style={{ 
+        transform: 'translateZ(0)',
+        willChange: 'transform',
+        backfaceVisibility: 'hidden'
+      }}
+    >
       <img 
         src={src} 
         alt={alt} 
@@ -107,21 +118,24 @@ const HomePage = () => {
       description: "Complete electrical solutions for your home, including wiring, lighting, and safety upgrades.",
       longDescription: "From new installations to repairs and upgrades, we provide comprehensive electrical services for your home. Our licensed electricians ensure your home's electrical system is safe, efficient, and up to code. Services include lighting installation, power point upgrades, switchboard upgrades, and safety inspections.",
       icon: <Home className="h-12 w-12" />,
-      link: "/services/residential"
+      link: "/services",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/residential.webp`
     },
     {
       title: "Commercial Services",
       description: "Professional electrical installations and maintenance for businesses of all sizes.",
       longDescription: "We deliver reliable electrical solutions for commercial properties, ensuring your business operations run smoothly. Our services include office fit-outs, retail installations, industrial electrical work, and regular maintenance programs. We work with businesses of all sizes to provide cost-effective and efficient electrical solutions.",
       icon: <Building className="h-12 w-12" />,
-      link: "/services/commercial"
+      link: "/services",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/commercial.webp`
     },
     {
       title: "Emergency Services",
       description: "Fast response emergency electrical services when you need help most.",
       longDescription: "Available 24/7 for electrical emergencies, our team provides rapid response service to resolve urgent electrical issues. Whether it's a power outage, electrical fault, or safety concern, we're here to help. Our emergency service includes immediate response, temporary fixes, and permanent solutions to get your power back on safely.",
       icon: <AlarmClock className="h-12 w-12" />,
-      link: "/services/emergency"
+      link: "/services",
+      photo: `${import.meta.env.BASE_URL}lovable-uploads/emergency.webp`
     },
   ];
 
@@ -220,9 +234,19 @@ const HomePage = () => {
       <section className="relative bg-gray-900 text-white">
         <div 
           className="absolute inset-0 bg-cover bg-bottom opacity-20"
-          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/brisbaneriver.webp')` }}
+          style={{ 
+            backgroundImage: `url('${import.meta.env.BASE_URL}lovable-uploads/brisbaneriver.webp')`,
+            transform: 'translateZ(0)', 
+            willChange: 'transform',
+            backfaceVisibility: 'hidden'
+          }}
         ></div>
-        <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
+        <div className="container mx-auto px-4 py-12 md:py-24 relative z-10"
+          style={{ 
+            transform: 'translateZ(0)',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden'
+          }}>
           <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
             <div className="lg:w-5/12">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -297,7 +321,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="md:w-1/2">
-              <h2 className="text-5xl font-bold mb-4">SE Queensland's #1 Trusted Electrician</h2>
+              <h2 className="text-5xl font-bold mb-4">SE Queensland's #1 Trusted Electrical Company</h2>
               <p className="text-gray-700 mb-6">
                 K Skuse Electrical is committed to providing safe, reliable, and high-quality electrical solutions for homes and businesses throughout Brisbane and SE Queensland.
               </p>
@@ -308,7 +332,7 @@ const HomePage = () => {
                 <FeatureCard icon={<ShieldCheck className="h-6 w-6" />} title="Licensed & Insured" />
                 <FeatureCard icon={<AlarmClock className="h-6 w-6" />} title="24/7 Emergency Service" />
                 <FeatureCard icon={<Zap className="h-6 w-6" />} title="Quality Workmanship" />
-                <FeatureCard icon={<Building className="h-6 w-6" />} title="15+ Years Experience" />
+                <FeatureCard icon={<Building className="h-6 w-6" />} title="25+ Years Experience" />
                 <FeatureCard icon={<Home className="h-6 w-6" />} title="Local & Reliable" />
                 <FeatureCard icon={<Star className="h-6 w-6" />} title="5 Star Google Reviews" />
               </div>
@@ -321,12 +345,27 @@ const HomePage = () => {
               </Link>
             </div>
             <div className="md:w-1/2">
-              <div style={{ height: 400, width: '100%', overflow: 'hidden', borderRadius: '0.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div style={{ 
+                height: 400, 
+                width: '100%', 
+                overflow: 'hidden', 
+                borderRadius: '0.5rem', 
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                transform: 'translateZ(0)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                position: 'relative'
+              }}>
                 <iframe
                   src="https://www.google.com/maps/d/embed?mid=1ekplzd_z2OlqC-i6_rzzcQO2OVX2YzA&ehbc=2E312F"
                   width="100%"
                   height="480"
-                  style={{ border: 0, marginTop: '-70px' }}
+                  style={{ 
+                    border: 0, 
+                    marginTop: '-70px',
+                    position: 'absolute',
+                    transform: 'translateZ(0)'
+                  }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -356,6 +395,7 @@ const HomePage = () => {
                 longDescription={service.longDescription}
                 icon={service.icon}
                 link={service.link}
+                photo={service.photo}
               />
             ))}
           </div>
@@ -388,13 +428,18 @@ const HomePage = () => {
             >
               <ChevronLeft className="h-8 w-8 text-brand-orange" />
             </button>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden" style={{ 
+              transform: 'translateZ(0)',
+              willChange: 'transform',
+              backfaceVisibility: 'hidden'
+            }}>
               <motion.div 
                 className="flex"
                 style={{ 
                   willChange: 'transform',
                   transform: 'translateZ(0)',
-                  backfaceVisibility: 'hidden'
+                  backfaceVisibility: 'hidden',
+                  contain: 'paint layout'
                 }}
                 animate={{ x: `${-currentSlide * (100 / reviewsPerPage)}%` }}
                 transition={{ 
@@ -411,7 +456,8 @@ const HomePage = () => {
                       width: `${100 / reviewsPerPage}%`,
                       willChange: 'transform',
                       transform: 'translateZ(0)',
-                      backfaceVisibility: 'hidden'
+                      backfaceVisibility: 'hidden',
+                      contain: 'paint layout'
                     }}
                   >
                     <TestimonialCard

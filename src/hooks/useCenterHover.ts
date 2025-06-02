@@ -12,7 +12,7 @@ export const useCenterHover = () => {
       const windowHeight = window.innerHeight;
       const elementCenter = rect.top + rect.height / 2;
       const screenCenter = windowHeight / 2;
-      const tolerance = 100; // pixels from center to trigger effect
+      const tolerance = 150; // Increased from 100 to reduce sensitivity
 
       setIsInCenter(Math.abs(elementCenter - screenCenter) < tolerance);
     };
