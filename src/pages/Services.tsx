@@ -250,8 +250,8 @@ const ServicesPage = () => {
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="max-w-4xl">
+        <div className="container mx-auto px-4 relative z-10">
+          <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">Our Electrical Services</h1>
             <p className="text-xl text-white">
               Comprehensive electrical solutions for residential and commercial properties across Brisbane.
@@ -263,8 +263,8 @@ const ServicesPage = () => {
       {/* Services Overview */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="max-w-4xl mx-auto mb-12 text-center">
-            <h2 className="text-3xl font-bold mb-6 text-center">No Job Too Big or Small</h2>
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold mb-6">No Job Too Big or Small</h2>
             <p className="text-lg text-gray-700 mb-4">
               At K SKUSE Electrical, we pride ourselves on delivering comprehensive electrical solutions that combine technical expertise with exceptional customer service. Our team of licensed electricians brings years of experience to every project, ensuring that your electrical needs are met with the highest standards of safety, quality, and efficiency.
             </p>
