@@ -45,7 +45,7 @@ const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
   );
 };
 
-const BrandLogo = ({ src, alt }: { src: string; alt: string }) => {
+const BrandLogo = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
   const [isMobile, setIsMobile] = useState(false);
   const { elementRef, isInCenter } = useCenterHover();
 
@@ -77,7 +77,7 @@ const BrandLogo = ({ src, alt }: { src: string; alt: string }) => {
           isLargeLogo ? 'h-32' : 'h-16'
         } ${
           isMobile && isInCenter ? 'grayscale-0 scale-110' : 'grayscale hover:grayscale-0 hover:scale-110'
-        }`}
+        } ${className || ''}`}
       />
     </div>
   );
@@ -483,7 +483,7 @@ const HomePage = () => {
               We partner with leading electrical brands to provide you with the highest quality products and solutions.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center justify-items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center">
             <BrandLogo 
               src={`${import.meta.env.BASE_URL}lovable-uploads/Schneider_Electric_2007.svg`} 
               alt="Schneider Electric" 
@@ -503,6 +503,11 @@ const HomePage = () => {
             <BrandLogo 
               src={`${import.meta.env.BASE_URL}lovable-uploads/arlec.webp`} 
               alt="Arlec" 
+            />
+            <BrandLogo 
+              src={`${import.meta.env.BASE_URL}lovable-uploads/abb-logo.svg`} 
+              alt="ABB" 
+              className="scale-90"
             />
           </div>
         </div>
