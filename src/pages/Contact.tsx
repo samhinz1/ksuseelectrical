@@ -34,7 +34,7 @@ const ContactPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Contact Information */}
-            <div className="lg:w-1/3">
+            <div className="lg:w-1/3 order-2 lg:order-1">
               <h2 className="text-2xl font-bold mb-6">Get In Touch</h2>
               <div className="space-y-8">
                 <div className="flex items-start">
@@ -104,7 +104,7 @@ const ContactPage = () => {
             </div>
 
             {/* Contact Form */}
-            <div className="lg:w-2/3">
+            <div className="lg:w-2/3 order-1 lg:order-2">
               <div className="bg-white p-6 md:p-8 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
                 <p className="text-gray-600 mb-6">

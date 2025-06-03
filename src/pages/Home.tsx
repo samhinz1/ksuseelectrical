@@ -273,7 +273,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="lg:w-5/12 w-full max-w-md lg:ml-auto">
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hidden md:block">
                 <h2 className="text-xl font-bold mb-4 text-white">Schedule a Call Back</h2>
                 <form className="space-y-3">
                   <div>
