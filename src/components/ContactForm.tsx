@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-// Define a global type for the reCAPTCHA object
+// Update global type for hCaptcha
 declare global {
   interface Window {
-    grecaptcha: any;
-    onRecaptchaLoad: () => void;
+    hcaptcha: any;
   }
 }
 
@@ -18,40 +17,16 @@ const ContactForm = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
-  const recaptchaRef = useRef<HTMLDivElement>(null);
-  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
   useEffect(() => {
-    // Load reCAPTCHA script if it's not already loaded
-    const loadReCaptcha = () => {
-      if (!document.querySelector('script[src*="recaptcha"]')) {
-        const script = document.createElement('script');
-        script.src = "https://www.google.com/recaptcha/api.js";
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-          setRecaptchaLoaded(true);
-        };
-        document.head.appendChild(script);
-      } else {
-        setRecaptchaLoaded(true);
-      }
-    };
-
-    loadReCaptcha();
-
-    // Make sure reCAPTCHA is attempted to be loaded even if the component
-    // mounts after the script was already loaded on another page
-    const checkRecaptchaInterval = setInterval(() => {
-      if (!recaptchaRef.current?.querySelector('.g-recaptcha-response') && window.grecaptcha) {
-        window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
-        });
-        clearInterval(checkRecaptchaInterval);
-      }
-    }, 1000);
-
-    return () => clearInterval(checkRecaptchaInterval);
+    // Load the web3forms script for hCaptcha if not already loaded
+    if (!document.querySelector('script[src*="web3forms"]')) {
+      const script = document.createElement('script');
+      script.src = "https://web3forms.com/client/script.js";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -65,23 +40,13 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if reCAPTCHA has been completed
-    if (!window.grecaptcha || !window.grecaptcha.getResponse()) {
-      toast({
-        title: "reCAPTCHA Required",
-        description: "Please complete the reCAPTCHA verification.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     setLoading(true);
     
     try {
       const formElement = e.target as HTMLFormElement;
       const formDataObj = new FormData(formElement);
       
-      // The reCAPTCHA response is automatically added to the form by the reCAPTCHA widget
+      // hCaptcha validation is handled by web3forms
       
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -101,10 +66,6 @@ const ContactForm = () => {
           phone: "",
           message: "",
         });
-        // Reset reCAPTCHA
-        if (window.grecaptcha) {
-          window.grecaptcha.reset();
-        }
       } else {
         throw new Error(data.message || "Something went wrong");
       }
@@ -193,14 +154,15 @@ const ContactForm = () => {
         />
       </div>
 
+      {/* hCaptcha div */}
       <div className="flex justify-center">
-        <div id="recaptcha" className="g-recaptcha" data-sitekey="6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI" ref={recaptchaRef}></div>
+        <div className="h-captcha" data-captcha="true"></div>
       </div>
 
       <div className="text-xs text-gray-500">
-        This site is protected by reCAPTCHA and the Google
+        By submitting this form, you agree to our 
         <a href="https://policies.google.com/privacy" className="text-brand-orange hover:underline"> Privacy Policy</a> and
-        <a href="https://policies.google.com/terms" className="text-brand-orange hover:underline"> Terms of Service</a> apply.
+        <a href="https://policies.google.com/terms" className="text-brand-orange hover:underline"> Terms of Service</a>.
       </div>
 
       <button

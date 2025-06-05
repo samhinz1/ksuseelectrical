@@ -8,11 +8,10 @@ import { useCenterHover } from "@/hooks/useCenterHover";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 
-// Define a global type for the reCAPTCHA object if it doesn't exist already
+// Update global type for hCaptcha
 declare global {
   interface Window {
-    grecaptcha: any;
-    onRecaptchaLoad: () => void;
+    hcaptcha: any;
   }
 }
 
@@ -99,30 +98,18 @@ const HomePage = () => {
     error: false,
     message: ''
   });
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
-  const recaptchaRef = useRef<HTMLDivElement>(null);
+  const captchaRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Check if captcha was verified (using our local state, not web3forms)
-    if (!isCaptchaVerified) {
-      setFormStatus({
-        loading: false,
-        success: false,
-        error: true,
-        message: 'Please complete the verification check first.'
-      });
-      return;
-    }
-    
+    // No need to manually check hCaptcha as web3forms will handle it
     setFormStatus({ loading: true, success: false, error: false, message: '' });
     
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      // Simply submit to web3forms without any reCAPTCHA fields
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
@@ -138,15 +125,11 @@ const HomePage = () => {
           message: 'Thank you! We will contact you shortly.'
         });
         form.reset();
-        // Reset our captcha verification state
-        setIsCaptchaVerified(false);
-        if (window.grecaptcha) {
-          window.grecaptcha.reset();
-        }
       } else {
         throw new Error(data.message || 'Something went wrong');
       }
     } catch (error) {
+      console.error('Form submission error:', error);
       setFormStatus({
         loading: false,
         success: false,
@@ -175,34 +158,14 @@ const HomePage = () => {
 
     // Add event listener for window resize
     window.addEventListener('resize', updateReviewsPerPage);
-
-    // Define a callback function for when reCAPTCHA script loads
-    window.onRecaptchaLoad = () => {
-      if (recaptchaRef.current && window.grecaptcha) {
-        window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
-          callback: () => {
-            // Set our local state to verified when captcha is completed
-            setIsCaptchaVerified(true);
-          },
-          'expired-callback': () => {
-            // Reset our local state if captcha expires
-            setIsCaptchaVerified(false);
-          }
-        });
-      }
-    };
-
-    // Load reCAPTCHA script if not already loaded
-    if (!document.querySelector('script[src*="recaptcha"]')) {
+    
+    // Load the web3forms script for hCaptcha if not already loaded
+    if (!document.querySelector('script[src*="web3forms"]')) {
       const script = document.createElement('script');
-      script.src = "https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit";
+      script.src = "https://web3forms.com/client/script.js";
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
-    } else if (window.grecaptcha && window.grecaptcha.render) {
-      // If script is already loaded, render the captcha
-      window.onRecaptchaLoad();
     }
 
     // Cleanup
@@ -380,90 +343,85 @@ const HomePage = () => {
                     <p>{formStatus.message}</p>
                   </div>
                 ) : (
-                  <>
-                    <form className="space-y-3" onSubmit={handleSubmit}>
-                      <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
-                      <input type="hidden" name="subject" value="New Call Back Request from Website" />
-                      <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
-                      <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
-                      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-                      <div className="hidden" style={{ display: 'none' }}>
-                        <input type="text" name="honey" />
-                      </div>
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          required
-                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                          placeholder="Your name"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          required
-                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                          placeholder="Your email address"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          required
-                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                          placeholder="Your phone number"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
-                        <textarea
-                          id="message"
-                          name="message"
-                          rows={2}
-                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                          placeholder="How can we help?"
-                        ></textarea>
-                      </div>
-                      
-                      <div className="text-xs text-white/70">
-                        By submitting this form, you agree to our 
-                        <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
-                        <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
-                      </div>
-                      
-                      {formStatus.error && (
-                        <div className="text-red-300 text-sm">
-                          <p>{formStatus.message}</p>
-                        </div>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={formStatus.loading || !isCaptchaVerified}
-                        className={`w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors ${
-                          (formStatus.loading || !isCaptchaVerified) ? 'opacity-70 cursor-not-allowed' : ''
-                        }`}
-                      >
-                        {formStatus.loading ? 'Sending...' : 'Request Call Back'}
-                      </button>
-                    </form>
+                  <form className="space-y-3" onSubmit={handleSubmit}>
+                    <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
+                    <input type="hidden" name="subject" value="New Call Back Request from Website" />
+                    <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
+                    <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
+                    <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+                    <div className="hidden" style={{ display: 'none' }}>
+                      <input type="text" name="honey" />
+                    </div>
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your email address"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your phone number"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={2}
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="How can we help?"
+                      ></textarea>
+                    </div>
                     
-                    {/* Completely separate div for verification */}
-                    <div className="mt-4 flex justify-center">
-                      <div ref={recaptchaRef}></div>
+                    {/* hCaptcha div */}
+                    <div className="flex justify-center">
+                      <div className="h-captcha" data-captcha="true"></div>
                     </div>
-                    <div className="text-center text-white/70 text-xs mt-2">
-                      Please verify you're human before submitting
+                    
+                    <div className="text-xs text-white/70">
+                      By submitting this form, you agree to our 
+                      <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
+                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
                     </div>
-                  </>
+                    
+                    {formStatus.error && (
+                      <div className="text-red-300 text-sm">
+                        <p>{formStatus.message}</p>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={formStatus.loading}
+                      className={`w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors ${
+                        formStatus.loading ? 'opacity-70 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      {formStatus.loading ? 'Sending...' : 'Request Call Back'}
+                    </button>
+                  </form>
                 )}
               </div>
             </div>
