@@ -1,10 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Zap, Home, Building, Plug, ShieldCheck, AlarmClock, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import CallToAction from "@/components/CallToAction";
-import { useState } from "react";
 import { useCenterHover } from "@/hooks/useCenterHover";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
@@ -100,35 +99,30 @@ const HomePage = () => {
     error: false,
     message: ''
   });
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const recaptchaRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
+    // Check if captcha was verified (using our local state, not web3forms)
+    if (!isCaptchaVerified) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: true,
+        message: 'Please complete the verification check first.'
+      });
+      return;
+    }
+    
     setFormStatus({ loading: true, success: false, error: false, message: '' });
     
     try {
-      // First, verify reCAPTCHA separately
-      const recaptchaResponse = window.grecaptcha?.getResponse();
-      if (!recaptchaResponse) {
-        setFormStatus({
-          loading: false,
-          success: false,
-          error: true,
-          message: 'Please complete the reCAPTCHA verification.'
-        });
-        return;
-      }
-      
-      // Once reCAPTCHA is verified, prepare form data for web3forms
-      // WITHOUT including the reCAPTCHA response
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      // Don't add g-recaptcha-response to formData
-      // web3forms will see it as a regular submission without reCAPTCHA
-      
-      // Send the form data to web3forms
+      // Simply submit to web3forms without any reCAPTCHA fields
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
@@ -144,7 +138,8 @@ const HomePage = () => {
           message: 'Thank you! We will contact you shortly.'
         });
         form.reset();
-        // Reset reCAPTCHA
+        // Reset our captcha verification state
+        setIsCaptchaVerified(false);
         if (window.grecaptcha) {
           window.grecaptcha.reset();
         }
@@ -182,15 +177,17 @@ const HomePage = () => {
     window.addEventListener('resize', updateReviewsPerPage);
 
     // Define a callback function for when reCAPTCHA script loads
-    // This is completely separate from web3forms handling
     window.onRecaptchaLoad = () => {
       if (recaptchaRef.current && window.grecaptcha) {
         window.grecaptcha.render(recaptchaRef.current, {
           sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
           callback: () => {
-            // This just validates the reCAPTCHA locally
-            // The token is never sent to web3forms
-            console.log('reCAPTCHA verified');
+            // Set our local state to verified when captcha is completed
+            setIsCaptchaVerified(true);
+          },
+          'expired-callback': () => {
+            // Reset our local state if captcha expires
+            setIsCaptchaVerified(false);
           }
         });
       }
@@ -383,84 +380,90 @@ const HomePage = () => {
                     <p>{formStatus.message}</p>
                   </div>
                 ) : (
-                  <form className="space-y-3" onSubmit={handleSubmit}>
-                    <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
-                    <input type="hidden" name="subject" value="New Call Back Request from Website" />
-                    <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
-                    <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
-                    <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-                    <div className="hidden" style={{ display: 'none' }}>
-                      <input type="text" name="honey" />
-                    </div>
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                        placeholder="Your name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                        placeholder="Your email address"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        required
-                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                        placeholder="Your phone number"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        rows={2}
-                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                        placeholder="How can we help?"
-                      ></textarea>
-                    </div>
+                  <>
+                    <form className="space-y-3" onSubmit={handleSubmit}>
+                      <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
+                      <input type="hidden" name="subject" value="New Call Back Request from Website" />
+                      <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
+                      <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
+                      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+                      <div className="hidden" style={{ display: 'none' }}>
+                        <input type="text" name="honey" />
+                      </div>
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                          placeholder="Your name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          required
+                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                          placeholder="Your email address"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          required
+                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                          placeholder="Your phone number"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+                        <textarea
+                          id="message"
+                          name="message"
+                          rows={2}
+                          className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                          placeholder="How can we help?"
+                        ></textarea>
+                      </div>
+                      
+                      <div className="text-xs text-white/70">
+                        By submitting this form, you agree to our 
+                        <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
+                        <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
+                      </div>
+                      
+                      {formStatus.error && (
+                        <div className="text-red-300 text-sm">
+                          <p>{formStatus.message}</p>
+                        </div>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={formStatus.loading || !isCaptchaVerified}
+                        className={`w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors ${
+                          (formStatus.loading || !isCaptchaVerified) ? 'opacity-70 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        {formStatus.loading ? 'Sending...' : 'Request Call Back'}
+                      </button>
+                    </form>
                     
-                    <div className="flex justify-center">
+                    {/* Completely separate div for verification */}
+                    <div className="mt-4 flex justify-center">
                       <div ref={recaptchaRef}></div>
                     </div>
-                    
-                    <div className="text-xs text-white/70">
-                      By submitting this form, you agree to our 
-                      <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
-                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
+                    <div className="text-center text-white/70 text-xs mt-2">
+                      Please verify you're human before submitting
                     </div>
-                    
-                    {formStatus.error && (
-                      <div className="text-red-300 text-sm">
-                        <p>{formStatus.message}</p>
-                      </div>
-                    )}
-                    <button
-                      type="submit"
-                      disabled={formStatus.loading}
-                      className={`w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors ${
-                        formStatus.loading ? 'opacity-70 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      {formStatus.loading ? 'Sending...' : 'Request Call Back'}
-                    </button>
-                  </form>
+                  </>
                 )}
               </div>
             </div>
