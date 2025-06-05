@@ -237,13 +237,43 @@ const HomePage = () => {
     window.addEventListener('resize', updateReviewsPerPage);
     
     // Load the web3forms script for hCaptcha if not already loaded
-    if (!document.querySelector('script[src*="web3forms"]')) {
-      const script = document.createElement('script');
-      script.src = "https://web3forms.com/client/script.js";
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
+    const loadWeb3FormsScript = () => {
+      if (!document.querySelector('script[src*="web3forms"]')) {
+        console.log("Loading web3forms script...");
+        const script = document.createElement('script');
+        script.src = "https://web3forms.com/client/script.js";
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          console.log("web3forms script loaded successfully");
+        };
+        script.onerror = () => {
+          console.error("Failed to load web3forms script");
+          // Fallback to direct hCaptcha loading
+          loadHCaptchaScript();
+        };
+        document.head.appendChild(script);
+      }
+    };
+    
+    // Direct hCaptcha script loading as a fallback
+    const loadHCaptchaScript = () => {
+      if (!document.querySelector('script[src*="hcaptcha.com"]')) {
+        console.log("Loading hCaptcha script directly...");
+        const script = document.createElement('script');
+        script.src = "https://js.hcaptcha.com/1/api.js";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    };
+    
+    // Make sure we load the script
+    loadWeb3FormsScript();
+    
+    // Also try to load hCaptcha directly after a short delay
+    // in case web3forms script doesn't handle it
+    setTimeout(loadHCaptchaScript, 1000);
 
     // Cleanup
     return () => {
@@ -475,7 +505,13 @@ const HomePage = () => {
                     
                     {/* hCaptcha div */}
                     <div className="flex justify-center">
-                      <div className="h-captcha" data-captcha="true"></div>
+                      <div 
+                        className="h-captcha" 
+                        data-captcha="true"
+                        data-sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+                        data-size="normal"
+                        data-theme="light"
+                      ></div>
                     </div>
                     
                     <div className="text-xs text-white/70">
