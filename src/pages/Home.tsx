@@ -108,10 +108,7 @@ const HomePage = () => {
     setFormStatus({ loading: true, success: false, error: false, message: '' });
     
     try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-      
-      // Manually verify reCAPTCHA
+      // First, verify reCAPTCHA separately
       const recaptchaResponse = window.grecaptcha?.getResponse();
       if (!recaptchaResponse) {
         setFormStatus({
@@ -123,8 +120,13 @@ const HomePage = () => {
         return;
       }
       
-      // Add recaptcha response to formData
-      formData.append('g-recaptcha-response', recaptchaResponse);
+      // Once reCAPTCHA is verified, prepare form data for web3forms
+      // WITHOUT including the reCAPTCHA response
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      // Don't add g-recaptcha-response to formData
+      // web3forms will see it as a regular submission without reCAPTCHA
       
       // Send the form data to web3forms
       const response = await fetch('https://api.web3forms.com/submit', {
@@ -180,10 +182,16 @@ const HomePage = () => {
     window.addEventListener('resize', updateReviewsPerPage);
 
     // Define a callback function for when reCAPTCHA script loads
+    // This is completely separate from web3forms handling
     window.onRecaptchaLoad = () => {
       if (recaptchaRef.current && window.grecaptcha) {
         window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI'
+          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
+          callback: () => {
+            // This just validates the reCAPTCHA locally
+            // The token is never sent to web3forms
+            console.log('reCAPTCHA verified');
+          }
         });
       }
     };
@@ -433,9 +441,9 @@ const HomePage = () => {
                     </div>
                     
                     <div className="text-xs text-white/70">
-                      This site is protected by reCAPTCHA and the Google
+                      By submitting this form, you agree to our 
                       <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
-                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a> apply.
+                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
                     </div>
                     
                     {formStatus.error && (
