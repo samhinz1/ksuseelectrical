@@ -103,117 +103,65 @@ const HomePage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // No need to manually check hCaptcha as web3forms will handle it
     setFormStatus({ loading: true, success: false, error: false, message: '' });
+    
+    // Create URL for request with API key
+    const API_KEY = '0b0782de-2ca8-445e-bc1d-e42741921ec3';
+    const url = `https://api.web3forms.com/submit?access_key=${API_KEY}`;
     
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      // Log attempt to submit form
-      console.log("Attempting to submit form to web3forms...");
+      // Log form data for debugging
+      console.log("Form data being submitted:");
+      for (const pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
       
-      // Try with alternative fetch approach to handle potential CORS issues
-      // Use XMLHttpRequest as a fallback
+      console.log("Submitting form to web3forms with direct approach...");
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      
+      let data;
       try {
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: formData
+        data = JSON.parse(responseText);
+        console.log("Parsed response data:", data);
+      } catch (e) {
+        console.error("Failed to parse response as JSON:", e);
+        throw new Error(`Server responded with non-JSON response: ${responseText.substring(0, 100)}...`);
+      }
+      
+      if (data.success) {
+        setFormStatus({
+          loading: false,
+          success: true,
+          error: false,
+          message: 'Thank you! We will contact you shortly.'
         });
-        
-        // Check if response is ok before trying to parse JSON
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response from web3forms:', response.status, errorText);
-          throw new Error(`Server responded with ${response.status}: ${errorText}`);
-        }
-        
-        const data = await response.json();
-        console.log("Form submission response:", data);
-        
-        if (data.success) {
-          handleSuccess(form);
-        } else {
-          throw new Error(data.message || 'Something went wrong');
-        }
-      } catch (fetchError) {
-        console.error('Fetch approach failed, trying XMLHttpRequest:', fetchError);
-        
-        // If fetch fails, try with XMLHttpRequest as fallback
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://api.web3forms.com/submit');
-          xhr.setRequestHeader('Accept', 'application/json');
-          
-          xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const data = JSON.parse(xhr.responseText);
-                console.log("XHR form submission response:", data);
-                if (data.success) {
-                  handleSuccess(form);
-                  resolve(data);
-                } else {
-                  const error = new Error(data.message || "Something went wrong");
-                  handleError(error);
-                  reject(error);
-                }
-              } catch (e) {
-                handleError(e);
-                reject(e);
-              }
-            } else {
-              const error = new Error(`Server responded with ${xhr.status}: ${xhr.statusText}`);
-              handleError(error);
-              reject(error);
-            }
-          };
-          
-          xhr.onerror = function() {
-            const error = new Error('Network request failed');
-            handleError(error);
-            reject(error);
-          };
-          
-          xhr.send(formData);
-        });
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Something went wrong');
       }
     } catch (error) {
-      handleError(error);
-    }
-  };
-  
-  const handleSuccess = (form: HTMLFormElement) => {
-    setFormStatus({
-      loading: false,
-      success: true,
-      error: false,
-      message: 'Thank you! We will contact you shortly.'
-    });
-    form.reset();
-  };
-  
-  const handleError = (error: unknown) => {
-    console.error('Form submission error details:', error);
-    
-    // More user-friendly error message with debugging info
-    let errorMessage = "Failed to submit form. ";
-    
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      errorMessage += "Network connection issue. Please check your internet connection and try again.";
-    } else {
+      console.error('Form submission error details:', error);
+      
+      let errorMessage = "Failed to submit form. ";
       errorMessage += error instanceof Error ? error.message : "Please try again.";
+      
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: true,
+        message: errorMessage
+      });
     }
-    
-    setFormStatus({
-      loading: false,
-      success: false,
-      error: true,
-      message: errorMessage
-    });
   };
 
   useEffect(() => {
@@ -455,10 +403,7 @@ const HomePage = () => {
                     <input type="hidden" name="subject" value="New Call Back Request from Website" />
                     <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
                     <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
-                    <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-                    <div className="hidden" style={{ display: 'none' }}>
-                      <input type="text" name="honey" />
-                    </div>
+                    <input type="hidden" name="botcheck" value="" />
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
                       <input

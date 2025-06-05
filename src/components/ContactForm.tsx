@@ -72,118 +72,67 @@ const ContactForm = () => {
     
     setLoading(true);
     
+    // Create URL for request with API key
+    const API_KEY = '0b0782de-2ca8-445e-bc1d-e42741921ec3';
+    const url = `https://api.web3forms.com/submit?access_key=${API_KEY}`;
+    
     try {
       const formElement = e.target as HTMLFormElement;
       const formDataObj = new FormData(formElement);
       
-      // Log attempt to submit form
-      console.log("Attempting to submit form to web3forms...");
+      // Log form data for debugging
+      console.log("Form data being submitted from ContactForm:");
+      for (const pair of formDataObj.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
       
-      // Try with alternative fetch approach to handle potential CORS issues
-      // Use XMLHttpRequest as a fallback
+      console.log("Submitting form to web3forms from ContactForm with direct approach...");
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formDataObj
+      });
+      
+      const responseText = await response.text();
+      console.log("Raw response from ContactForm:", responseText);
+      
+      let data;
       try {
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: formDataObj
+        data = JSON.parse(responseText);
+        console.log("Parsed response data from ContactForm:", data);
+      } catch (e) {
+        console.error("Failed to parse response as JSON in ContactForm:", e);
+        throw new Error(`Server responded with non-JSON response: ${responseText.substring(0, 100)}...`);
+      }
+      
+      if (data.success) {
+        toast({
+          title: "Form submitted successfully!",
+          description: "We'll get back to you as soon as possible.",
         });
-        
-        // Check if response is ok before trying to parse JSON
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response from web3forms:', response.status, errorText);
-          throw new Error(`Server responded with ${response.status}: ${errorText}`);
-        }
-        
-        const data = await response.json();
-        console.log("Form submission response:", data);
-        
-        if (data.success) {
-          handleSuccess();
-        } else {
-          throw new Error(data.message || "Something went wrong");
-        }
-      } catch (fetchError) {
-        console.error('Fetch approach failed, trying XMLHttpRequest:', fetchError);
-        
-        // If fetch fails, try with XMLHttpRequest as fallback
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://api.web3forms.com/submit');
-          xhr.setRequestHeader('Accept', 'application/json');
-          
-          xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const data = JSON.parse(xhr.responseText);
-                console.log("XHR form submission response:", data);
-                if (data.success) {
-                  handleSuccess();
-                  resolve(data);
-                } else {
-                  const error = new Error(data.message || "Something went wrong");
-                  handleError(error);
-                  reject(error);
-                }
-              } catch (e) {
-                handleError(e);
-                reject(e);
-              }
-            } else {
-              const error = new Error(`Server responded with ${xhr.status}: ${xhr.statusText}`);
-              handleError(error);
-              reject(error);
-            }
-          };
-          
-          xhr.onerror = function() {
-            const error = new Error('Network request failed');
-            handleError(error);
-            reject(error);
-          };
-          
-          xhr.send(formDataObj);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
         });
+      } else {
+        throw new Error(data.message || "Something went wrong");
       }
     } catch (error) {
-      handleError(error);
+      console.error('Form submission error details from ContactForm:', error);
+      
+      let errorMessage = "Failed to submit form. ";
+      errorMessage += error instanceof Error ? error.message : "Please try again.";
+      
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
-  };
-  
-  const handleSuccess = () => {
-    toast({
-      title: "Form submitted successfully!",
-      description: "We'll get back to you as soon as possible.",
-    });
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    });
-  };
-  
-  const handleError = (error: unknown) => {
-    console.error('Form submission error details:', error);
-    
-    // More user-friendly error message with debugging info
-    let errorMessage = "Failed to submit form. ";
-    
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      errorMessage += "Network connection issue. Please check your internet connection and try again.";
-    } else {
-      errorMessage += error instanceof Error ? error.message : "Please try again.";
-    }
-    
-    toast({
-      title: "Error",
-      description: errorMessage,
-      variant: "destructive",
-    });
   };
 
   return (
@@ -191,10 +140,7 @@ const ContactForm = () => {
       <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
       <input type="hidden" name="subject" value="New Contact Form Submission" />
       <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
-      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
-      <div className="hidden" style={{ display: 'none' }}>
-        <input type="text" name="honey" />
-      </div>
+      <input type="hidden" name="botcheck" value="" />
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
