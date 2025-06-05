@@ -81,14 +81,14 @@ const AboutPage = () => {
               {/* Certifications */}
               <div className="bg-white rounded-xl shadow-md p-6">
                 <h3 className="text-xl font-bold mb-4">Our Certifications</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                     <img 
-                      src={`${import.meta.env.BASE_URL}lovable-uploads/qbcc.webp`} 
-                      alt="QBCC License" 
+                      src={`${import.meta.env.BASE_URL}lovable-uploads/zurich.png`} 
+                      alt="Insured by Zurich" 
                       className="h-16 w-auto mb-2 object-contain"
                     />
-                    <h4 className="font-bold text-sm text-center">QBCC Licensed</h4>
+                    <h4 className="font-bold text-sm text-center">Insured by Zurich</h4>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                     <img 
@@ -96,15 +96,15 @@ const AboutPage = () => {
                       alt="QLD Government License" 
                       className="h-16 w-auto mb-2 object-contain"
                     />
-                    <h4 className="font-bold text-sm text-center">QLD Government</h4>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
-                    <img 
-                      src={`${import.meta.env.BASE_URL}lovable-uploads/ARC.webp`} 
-                      alt="ARC License" 
-                      className="h-16 w-auto mb-2 object-contain"
-                    />
-                    <h4 className="font-bold text-sm text-center">ARC Licensed</h4>
+                    <h4 className="font-bold text-sm text-center">QLD Licensed Electrician #1503362</h4>
+                    <a 
+                      href="https://rapid.appianportals.com/public_licence_search" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="mt-2 text-xs bg-brand-orange text-white px-3 py-1 rounded-md hover:bg-orange-600 transition-colors"
+                    >
+                      Check here
+                    </a>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                     <img 

@@ -88,6 +88,15 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
+                  to="/areas-we-service"
+                  className="hover:text-brand-orange transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  Areas We Service
+                </Link>
+              </li>
+              <li>
+                <Link 
                   to="/faq"
                   className="hover:text-brand-orange transition-colors"
                   onClick={() => window.scrollTo(0, 0)}
@@ -134,6 +143,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between gap-4">
             <p>&copy; {new Date().getFullYear()} K Skuse Electrical. All rights reserved.</p>
             <p>
+              QLD Qualified Electrician License #1503362
             </p>
           </div>
         </div>

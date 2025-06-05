@@ -1,6 +1,13 @@
-
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+
+// Define a global type for the reCAPTCHA object
+declare global {
+  interface Window {
+    grecaptcha: any;
+    onRecaptchaLoad: () => void;
+  }
+}
 
 const ContactForm = () => {
   const { toast } = useToast();
@@ -11,6 +18,41 @@ const ContactForm = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const recaptchaRef = useRef<HTMLDivElement>(null);
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+
+  useEffect(() => {
+    // Load reCAPTCHA script if it's not already loaded
+    const loadReCaptcha = () => {
+      if (!document.querySelector('script[src*="recaptcha"]')) {
+        const script = document.createElement('script');
+        script.src = "https://www.google.com/recaptcha/api.js";
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          setRecaptchaLoaded(true);
+        };
+        document.head.appendChild(script);
+      } else {
+        setRecaptchaLoaded(true);
+      }
+    };
+
+    loadReCaptcha();
+
+    // Make sure reCAPTCHA is attempted to be loaded even if the component
+    // mounts after the script was already loaded on another page
+    const checkRecaptchaInterval = setInterval(() => {
+      if (!recaptchaRef.current?.querySelector('.g-recaptcha-response') && window.grecaptcha) {
+        window.grecaptcha.render(recaptchaRef.current, {
+          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
+        });
+        clearInterval(checkRecaptchaInterval);
+      }
+    }, 1000);
+
+    return () => clearInterval(checkRecaptchaInterval);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -20,28 +62,73 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if reCAPTCHA has been completed
+    if (!window.grecaptcha || !window.grecaptcha.getResponse()) {
+      toast({
+        title: "reCAPTCHA Required",
+        description: "Please complete the reCAPTCHA verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const formElement = e.target as HTMLFormElement;
+      const formDataObj = new FormData(formElement);
+      
+      // The reCAPTCHA response is automatically added to the form by the reCAPTCHA widget
+      
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formDataObj
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Form submitted successfully!",
+          description: "We'll get back to you as soon as possible.",
+        });
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
+        // Reset reCAPTCHA
+        if (window.grecaptcha) {
+          window.grecaptcha.reset();
+        }
+      } else {
+        throw new Error(data.message || "Something went wrong");
+      }
+    } catch (error) {
       toast({
-        title: "Form submitted successfully!",
-        description: "We'll get back to you as soon as possible.",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit form. Please try again.",
+        variant: "destructive",
       });
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-      });
-    }, 1000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
+      <input type="hidden" name="subject" value="New Contact Form Submission" />
+      <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
+      <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+      <div className="hidden" style={{ display: 'none' }}>
+        <input type="text" name="honey" />
+      </div>
+
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
           Name *
@@ -106,10 +193,22 @@ const ContactForm = () => {
         />
       </div>
 
+      <div className="flex justify-center">
+        <div id="recaptcha" className="g-recaptcha" data-sitekey="6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI" ref={recaptchaRef}></div>
+      </div>
+
+      <div className="text-xs text-gray-500">
+        This site is protected by reCAPTCHA and the Google
+        <a href="https://policies.google.com/privacy" className="text-brand-orange hover:underline"> Privacy Policy</a> and
+        <a href="https://policies.google.com/terms" className="text-brand-orange hover:underline"> Terms of Service</a> apply.
+      </div>
+
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-brand-orange hover:bg-opacity-90 text-white py-3 px-6 rounded-md font-semibold transition-all flex justify-center items-center"
+        className={`w-full bg-brand-orange hover:bg-opacity-90 text-white py-3 px-6 rounded-md font-semibold transition-all flex justify-center items-center ${
+          loading ? 'opacity-70 cursor-not-allowed' : ''
+        }`}
       >
         {loading ? "Submitting..." : "Send Message"}
       </button>

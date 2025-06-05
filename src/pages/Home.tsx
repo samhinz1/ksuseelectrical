@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Zap, Home, Building, Plug, ShieldCheck, AlarmClock, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
@@ -8,6 +8,14 @@ import { useState } from "react";
 import { useCenterHover } from "@/hooks/useCenterHover";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+
+// Define a global type for the reCAPTCHA object if it doesn't exist already
+declare global {
+  interface Window {
+    grecaptcha: any;
+    onRecaptchaLoad: () => void;
+  }
+}
 
 const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -86,6 +94,67 @@ const BrandLogo = ({ src, alt, className }: { src: string; alt: string; classNam
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [reviewsPerPage, setReviewsPerPage] = useState(3);
+  const [formStatus, setFormStatus] = useState({
+    loading: false,
+    success: false,
+    error: false,
+    message: ''
+  });
+  const recaptchaRef = useRef<HTMLDivElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Check if reCAPTCHA has been completed
+    if (!window.grecaptcha || !window.grecaptcha.getResponse()) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: true,
+        message: 'Please complete the reCAPTCHA verification.'
+      });
+      return;
+    }
+    
+    setFormStatus({ loading: true, success: false, error: false, message: '' });
+    
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      // The reCAPTCHA response is automatically added to the form by the reCAPTCHA widget
+      
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setFormStatus({
+          loading: false,
+          success: true,
+          error: false,
+          message: 'Thank you! We will contact you shortly.'
+        });
+        form.reset();
+        // Reset reCAPTCHA
+        if (window.grecaptcha) {
+          window.grecaptcha.reset();
+        }
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: true,
+        message: error instanceof Error ? error.message : 'Something went wrong. Please try again.'
+      });
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,8 +176,35 @@ const HomePage = () => {
     // Add event listener for window resize
     window.addEventListener('resize', updateReviewsPerPage);
 
+    // Load reCAPTCHA script if not already loaded
+    const loadReCaptcha = () => {
+      if (!document.querySelector('script[src*="recaptcha"]')) {
+        const script = document.createElement('script');
+        script.src = "https://www.google.com/recaptcha/api.js";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    };
+    
+    loadReCaptcha();
+    
+    // Make sure reCAPTCHA is attempted to be loaded even if the component
+    // mounts after the script was already loaded on another page
+    const checkRecaptchaInterval = setInterval(() => {
+      if (recaptchaRef.current && !recaptchaRef.current.querySelector('.g-recaptcha-response') && window.grecaptcha) {
+        window.grecaptcha.render(recaptchaRef.current, {
+          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
+        });
+        clearInterval(checkRecaptchaInterval);
+      }
+    }, 1000);
+
     // Cleanup
-    return () => window.removeEventListener('resize', updateReviewsPerPage);
+    return () => {
+      window.removeEventListener('resize', updateReviewsPerPage);
+      clearInterval(checkRecaptchaInterval);
+    };
   }, []);
 
   // Sample services data
@@ -174,7 +270,7 @@ const HomePage = () => {
       source: "Google"
     },
     {
-      quote: "Excellent service from start to finish. Found them on Hipages and they were the best electrician I've used in Brisbane.",
+      quote: "Excellent service from start to finish. Found them on Hipages and they were the best electricians I've used in Brisbane.",
       author: "Michael Brown",
       location: "Hawthorne",
       rating: 5,
@@ -253,7 +349,7 @@ const HomePage = () => {
                 Electrical Services SE Queensland Locals Trust
               </h1>
               <p className="text-xl mb-6">
-                Licensed, insured, and experienced electrician providing quality residential and commercial electrical services.
+                Licensed, insured, and experienced electricians providing quality residential and commercial electrical services.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -275,41 +371,90 @@ const HomePage = () => {
             <div className="lg:w-5/12 w-full max-w-md lg:ml-auto">
               <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hidden md:block">
                 <h2 className="text-xl font-bold mb-4 text-white">Schedule a Call Back</h2>
-                <form className="space-y-3">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                      placeholder="Your name"
-                    />
+                {formStatus.success ? (
+                  <div className="bg-green-500/20 border border-green-500/50 rounded p-4 text-white">
+                    <p>{formStatus.message}</p>
                   </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                      placeholder="Your phone number"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
-                    <textarea
-                      id="message"
-                      rows={2}
-                      className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
-                      placeholder="How can we help?"
-                    ></textarea>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors"
-                  >
-                    Request Call Back
-                  </button>
-                </form>
+                ) : (
+                  <form className="space-y-3" onSubmit={handleSubmit}>
+                    <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
+                    <input type="hidden" name="subject" value="New Call Back Request from Website" />
+                    <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
+                    <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
+                    <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+                    <div className="hidden" style={{ display: 'none' }}>
+                      <input type="text" name="honey" />
+                    </div>
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your email address"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        required
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="Your phone number"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={2}
+                        className="w-full px-3 py-2 rounded bg-white/5 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-brand-orange text-sm"
+                        placeholder="How can we help?"
+                      ></textarea>
+                    </div>
+                    
+                    <div className="flex justify-center">
+                      <div id="home-recaptcha" className="g-recaptcha" data-sitekey="6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI" ref={recaptchaRef}></div>
+                    </div>
+                    
+                    <div className="text-xs text-white/70">
+                      This site is protected by reCAPTCHA and the Google
+                      <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
+                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a> apply.
+                    </div>
+                    
+                    {formStatus.error && (
+                      <div className="text-red-300 text-sm">
+                        <p>{formStatus.message}</p>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={formStatus.loading}
+                      className={`w-full bg-brand-orange hover:bg-opacity-90 text-white px-4 py-2 rounded font-semibold text-base transition-colors ${
+                        formStatus.loading ? 'opacity-70 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      {formStatus.loading ? 'Sending...' : 'Request Call Back'}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>
