@@ -46,42 +46,118 @@ const ContactForm = () => {
       const formElement = e.target as HTMLFormElement;
       const formDataObj = new FormData(formElement);
       
-      // hCaptcha validation is handled by web3forms
+      // Log attempt to submit form
+      console.log("Attempting to submit form to web3forms...");
       
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: formDataObj
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        toast({
-          title: "Form submitted successfully!",
-          description: "We'll get back to you as soon as possible.",
+      // Try with alternative fetch approach to handle potential CORS issues
+      // Use XMLHttpRequest as a fallback
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          },
+          body: formDataObj
         });
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          message: "",
+        
+        // Check if response is ok before trying to parse JSON
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response from web3forms:', response.status, errorText);
+          throw new Error(`Server responded with ${response.status}: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log("Form submission response:", data);
+        
+        if (data.success) {
+          handleSuccess();
+        } else {
+          throw new Error(data.message || "Something went wrong");
+        }
+      } catch (fetchError) {
+        console.error('Fetch approach failed, trying XMLHttpRequest:', fetchError);
+        
+        // If fetch fails, try with XMLHttpRequest as fallback
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.web3forms.com/submit');
+          xhr.setRequestHeader('Accept', 'application/json');
+          
+          xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                console.log("XHR form submission response:", data);
+                if (data.success) {
+                  handleSuccess();
+                  resolve(data);
+                } else {
+                  const error = new Error(data.message || "Something went wrong");
+                  handleError(error);
+                  reject(error);
+                }
+              } catch (e) {
+                handleError(e);
+                reject(e);
+              }
+            } else {
+              const error = new Error(`Server responded with ${xhr.status}: ${xhr.statusText}`);
+              handleError(error);
+              reject(error);
+            }
+          };
+          
+          xhr.onerror = function() {
+            const error = new Error('Network request failed');
+            handleError(error);
+            reject(error);
+          };
+          
+          xhr.send(formDataObj);
         });
-      } else {
-        throw new Error(data.message || "Something went wrong");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to submit form. Please try again.",
-        variant: "destructive",
-      });
+      handleError(error);
     } finally {
       setLoading(false);
     }
   };
+  
+  const handleSuccess = () => {
+    toast({
+      title: "Form submitted successfully!",
+      description: "We'll get back to you as soon as possible.",
+    });
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    });
+  };
+  
+  const handleError = (error: unknown) => {
+    console.error('Form submission error details:', error);
+    
+    // More user-friendly error message with debugging info
+    let errorMessage = "Failed to submit form. ";
+    
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      errorMessage += "Network connection issue. Please check your internet connection and try again.";
+    } else {
+      errorMessage += error instanceof Error ? error.message : "Please try again.";
+    }
+    
+    toast({
+      title: "Error",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" method="POST" action="https://api.web3forms.com/submit">
       <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
       <input type="hidden" name="subject" value="New Contact Form Submission" />
       <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
