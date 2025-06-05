@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Update global type for hCaptcha
 declare global {
@@ -14,6 +14,8 @@ const ContactForm = () => {
     error: false,
     message: ''
   });
+  
+  const captchaInitialized = useRef(false);
 
   // Function to handle form submission with inline thank you message
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,6 +55,11 @@ const ContactForm = () => {
         // Reset the form
         form.reset();
         
+        // Reset captcha
+        if (window.hcaptcha) {
+          window.hcaptcha.reset();
+        }
+        
         // Clean up the iframe after a delay
         setTimeout(() => {
           document.body.removeChild(iframe);
@@ -71,45 +78,42 @@ const ContactForm = () => {
     }
   };
 
+  // Function to initialize hCaptcha
+  const initializeCaptcha = () => {
+    // Clear any existing captcha first
+    const existingCaptcha = document.querySelector('.h-captcha iframe');
+    if (existingCaptcha) {
+      if (window.hcaptcha) {
+        window.hcaptcha.reset();
+      }
+    }
+    
+    // If hCaptcha is already loaded, render it
+    if (window.hcaptcha) {
+      window.hcaptcha.render('captcha-container');
+      captchaInitialized.current = true;
+      return;
+    }
+    
+    // Otherwise load the script
+    const script = document.createElement('script');
+    script.src = "https://js.hcaptcha.com/1/api.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      captchaInitialized.current = true;
+    };
+    document.head.appendChild(script);
+  };
+
   useEffect(() => {
-    // Load the web3forms script for hCaptcha if not already loaded
-    const loadWeb3FormsScript = () => {
-      if (!document.querySelector('script[src*="web3forms"]')) {
-        console.log("Loading web3forms script for ContactForm...");
-        const script = document.createElement('script');
-        script.src = "https://web3forms.com/client/script.js";
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-          console.log("web3forms script loaded successfully in ContactForm");
-        };
-        script.onerror = () => {
-          console.error("Failed to load web3forms script in ContactForm");
-          // Fallback to direct hCaptcha loading
-          loadHCaptchaScript();
-        };
-        document.head.appendChild(script);
-      }
+    // Initialize captcha when component mounts
+    initializeCaptcha();
+    
+    // Re-initialize captcha when component is shown after navigation
+    return () => {
+      captchaInitialized.current = false;
     };
-    
-    // Direct hCaptcha script loading as a fallback
-    const loadHCaptchaScript = () => {
-      if (!document.querySelector('script[src*="hcaptcha.com"]')) {
-        console.log("Loading hCaptcha script directly in ContactForm...");
-        const script = document.createElement('script');
-        script.src = "https://js.hcaptcha.com/1/api.js";
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-      }
-    };
-    
-    // Make sure we load the script
-    loadWeb3FormsScript();
-    
-    // Also try to load hCaptcha directly after a short delay
-    // in case web3forms script doesn't handle it
-    setTimeout(loadHCaptchaScript, 1000);
   }, []);
 
   return (
@@ -189,6 +193,7 @@ const ContactForm = () => {
           {/* hCaptcha div */}
           <div className="flex justify-center">
             <div 
+              id="captcha-container"
               className="h-captcha" 
               data-captcha="true"
               data-sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
