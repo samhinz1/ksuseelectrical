@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Zap, Home, Building, Plug, ShieldCheck, AlarmClock, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
@@ -98,68 +98,60 @@ const HomePage = () => {
     error: false,
     message: ''
   });
-  const captchaRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Function to handle form submission with inline thank you message
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    setFormStatus({ loading: true, success: false, error: false, message: '' });
+    setFormStatus({ 
+      loading: true, 
+      success: false, 
+      error: false, 
+      message: '' 
+    });
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     
-    // Create URL for request with API key
-    const API_KEY = '0b0782de-2ca8-445e-bc1d-e42741921ec3';
-    const url = `https://api.web3forms.com/submit?access_key=${API_KEY}`;
-    
+    // Create a traditional form submission using hidden iframe approach
+    // This avoids CORS issues while keeping the user on the same page
     try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
+      // Create a hidden iframe for the form submission
+      const iframe = document.createElement('iframe');
+      iframe.name = 'form-submit-iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
       
-      // Log form data for debugging
-      console.log("Form data being submitted:");
-      for (const pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
+      // Set the form target to the iframe
+      form.target = 'form-submit-iframe';
       
-      console.log("Submitting form to web3forms with direct approach...");
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData
-      });
-      
-      const responseText = await response.text();
-      console.log("Raw response:", responseText);
-      
-      let data;
-      try {
-        data = JSON.parse(responseText);
-        console.log("Parsed response data:", data);
-      } catch (e) {
-        console.error("Failed to parse response as JSON:", e);
-        throw new Error(`Server responded with non-JSON response: ${responseText.substring(0, 100)}...`);
-      }
-      
-      if (data.success) {
+      // Listen for iframe load event to know when submission completes
+      iframe.onload = () => {
+        // Show success message
         setFormStatus({
           loading: false,
           success: true,
           error: false,
           message: 'Thank you! We will contact you shortly.'
         });
+        
+        // Reset the form
         form.reset();
-      } else {
-        throw new Error(data.message || 'Something went wrong');
-      }
+        
+        // Clean up the iframe after a delay
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
+      };
+      
+      // Submit the form
+      form.submit();
     } catch (error) {
-      console.error('Form submission error details:', error);
-      
-      let errorMessage = "Failed to submit form. ";
-      errorMessage += error instanceof Error ? error.message : "Please try again.";
-      
       setFormStatus({
         loading: false,
         success: false,
         error: true,
-        message: errorMessage
+        message: 'Something went wrong. Please try again.'
       });
     }
   };
@@ -398,11 +390,15 @@ const HomePage = () => {
                     <p>{formStatus.message}</p>
                   </div>
                 ) : (
-                  <form className="space-y-3" onSubmit={handleSubmit} method="POST" action="https://api.web3forms.com/submit">
+                  <form 
+                    method="POST" 
+                    action="https://api.web3forms.com/submit" 
+                    className="space-y-3"
+                    onSubmit={handleFormSubmit}
+                  >
                     <input type="hidden" name="access_key" value="0b0782de-2ca8-445e-bc1d-e42741921ec3" />
                     <input type="hidden" name="subject" value="New Call Back Request from Website" />
                     <input type="hidden" name="from_name" value="K Skuse Electrical Website" />
-                    <input type="hidden" name="redirect" value={`${window.location.origin}${import.meta.env.BASE_URL}thank-you`} />
                     <input type="hidden" name="botcheck" value="" />
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
