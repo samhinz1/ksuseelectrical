@@ -105,25 +105,28 @@ const HomePage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Check if reCAPTCHA has been completed
-    if (!window.grecaptcha || !window.grecaptcha.getResponse()) {
-      setFormStatus({
-        loading: false,
-        success: false,
-        error: true,
-        message: 'Please complete the reCAPTCHA verification.'
-      });
-      return;
-    }
-    
     setFormStatus({ loading: true, success: false, error: false, message: '' });
     
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      // The reCAPTCHA response is automatically added to the form by the reCAPTCHA widget
+      // Manually verify reCAPTCHA
+      const recaptchaResponse = window.grecaptcha?.getResponse();
+      if (!recaptchaResponse) {
+        setFormStatus({
+          loading: false,
+          success: false,
+          error: true,
+          message: 'Please complete the reCAPTCHA verification.'
+        });
+        return;
+      }
       
+      // Add recaptcha response to formData
+      formData.append('g-recaptcha-response', recaptchaResponse);
+      
+      // Send the form data to web3forms
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
@@ -176,34 +179,30 @@ const HomePage = () => {
     // Add event listener for window resize
     window.addEventListener('resize', updateReviewsPerPage);
 
-    // Load reCAPTCHA script if not already loaded
-    const loadReCaptcha = () => {
-      if (!document.querySelector('script[src*="recaptcha"]')) {
-        const script = document.createElement('script');
-        script.src = "https://www.google.com/recaptcha/api.js";
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
+    // Define a callback function for when reCAPTCHA script loads
+    window.onRecaptchaLoad = () => {
+      if (recaptchaRef.current && window.grecaptcha) {
+        window.grecaptcha.render(recaptchaRef.current, {
+          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI'
+        });
       }
     };
-    
-    loadReCaptcha();
-    
-    // Make sure reCAPTCHA is attempted to be loaded even if the component
-    // mounts after the script was already loaded on another page
-    const checkRecaptchaInterval = setInterval(() => {
-      if (recaptchaRef.current && !recaptchaRef.current.querySelector('.g-recaptcha-response') && window.grecaptcha) {
-        window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: '6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI',
-        });
-        clearInterval(checkRecaptchaInterval);
-      }
-    }, 1000);
+
+    // Load reCAPTCHA script if not already loaded
+    if (!document.querySelector('script[src*="recaptcha"]')) {
+      const script = document.createElement('script');
+      script.src = "https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    } else if (window.grecaptcha && window.grecaptcha.render) {
+      // If script is already loaded, render the captcha
+      window.onRecaptchaLoad();
+    }
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', updateReviewsPerPage);
-      clearInterval(checkRecaptchaInterval);
     };
   }, []);
 
@@ -430,7 +429,7 @@ const HomePage = () => {
                     </div>
                     
                     <div className="flex justify-center">
-                      <div id="home-recaptcha" className="g-recaptcha" data-sitekey="6LcqS1YrAAAAALvle5-cNGfyl69xrVzQvHUcLMeI" ref={recaptchaRef}></div>
+                      <div ref={recaptchaRef}></div>
                     </div>
                     
                     <div className="text-xs text-white/70">
