@@ -148,29 +148,11 @@ const HomePage = () => {
 
   // Function to initialize hCaptcha
   const initializeCaptcha = () => {
-    // Clear any existing captcha first
-    const existingCaptcha = document.querySelector('.h-captcha iframe');
-    if (existingCaptcha) {
-      if (window.hcaptcha) {
-        window.hcaptcha.reset();
-      }
-    }
-    
-    // If hCaptcha is already loaded, render it
-    if (window.hcaptcha) {
-      window.hcaptcha.render('hero-captcha-container');
-      captchaInitialized.current = true;
-      return;
-    }
-    
-    // Otherwise load the script
+    // Load Web3Forms script for hCaptcha
     const script = document.createElement('script');
-    script.src = "https://js.hcaptcha.com/1/api.js";
+    script.src = "https://web3forms.com/client/script.js";
     script.async = true;
     script.defer = true;
-    script.onload = () => {
-      captchaInitialized.current = true;
-    };
     document.head.appendChild(script);
   };
 
@@ -433,7 +415,6 @@ const HomePage = () => {
                         id="hero-captcha-container"
                         className="h-captcha" 
                         data-captcha="true"
-                        data-sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
                         data-size="normal"
                         data-theme="light"
                       ></div>

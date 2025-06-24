@@ -62,16 +62,16 @@ const ContactForm = () => {
   };
 
   useEffect(() => {
-    // Load hCaptcha script
+    // Load Web3Forms script for hCaptcha
     const script = document.createElement('script');
-    script.src = "https://js.hcaptcha.com/1/api.js";
+    script.src = "https://web3forms.com/client/script.js";
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
 
     return () => {
       // Cleanup script on unmount
-      const existingScript = document.querySelector('script[src="https://js.hcaptcha.com/1/api.js"]');
+      const existingScript = document.querySelector('script[src="https://web3forms.com/client/script.js"]');
       if (existingScript) {
         document.head.removeChild(existingScript);
       }
@@ -151,11 +151,11 @@ const ContactForm = () => {
             />
           </div>
 
-          {/* hCaptcha div */}
+          {/* hCaptcha div - Web3Forms method */}
           <div className="flex justify-center">
             <div 
               className="h-captcha" 
-              data-sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+              data-captcha="true"
               data-size="normal"
               data-theme="light"
             ></div>
