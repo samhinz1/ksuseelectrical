@@ -54,7 +54,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/ksuseelectrical">
+      <BrowserRouter>
         <AppContent />
       </BrowserRouter>
     </TooltipProvider>
