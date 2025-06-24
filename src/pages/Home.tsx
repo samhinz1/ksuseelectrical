@@ -7,13 +7,7 @@ import CallToAction from "@/components/CallToAction";
 import { useCenterHover } from "@/hooks/useCenterHover";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-
-// Update global type for hCaptcha
-declare global {
-  interface Window {
-    hcaptcha: any;
-  }
-}
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const FeatureCard = ({ icon, title }: { icon: ReactNode; title: string }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -98,11 +92,28 @@ const HomePage = () => {
     error: false,
     message: ''
   });
-  const captchaInitialized = useRef(false);
+
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  // Function to handle hCaptcha verification
+  const onHCaptchaChange = (token: string) => {
+    setCaptchaToken(token);
+  };
 
   // Function to handle form submission with inline thank you message
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Check if captcha is completed
+    if (!captchaToken) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: true,
+        message: 'Please complete the captcha verification.'
+      });
+      return;
+    }
     
     setFormStatus({ 
       loading: true, 
@@ -114,6 +125,9 @@ const HomePage = () => {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
+      
+      // Add captcha token to form data
+      formData.append('h-captcha-response', captchaToken);
       
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -130,9 +144,7 @@ const HomePage = () => {
           message: 'Thank you! We will contact you shortly.'
         });
         form.reset();
-        if (window.hcaptcha) {
-          window.hcaptcha.reset();
-        }
+        setCaptchaToken(null); // Reset captcha
       } else {
         throw new Error(data.message || 'Something went wrong');
       }
@@ -143,17 +155,8 @@ const HomePage = () => {
         error: true,
         message: error instanceof Error ? error.message : 'Something went wrong. Please try again.'
       });
+      setCaptchaToken(null); // Reset captcha on error
     }
-  };
-
-  // Function to initialize hCaptcha
-  const initializeCaptcha = () => {
-    // Load Web3Forms script for hCaptcha
-    const script = document.createElement('script');
-    script.src = "https://web3forms.com/client/script.js";
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
   };
 
   useEffect(() => {
@@ -175,14 +178,10 @@ const HomePage = () => {
 
     // Add event listener for window resize
     window.addEventListener('resize', updateReviewsPerPage);
-    
-    // Initialize captcha
-    initializeCaptcha();
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', updateReviewsPerPage);
-      captchaInitialized.current = false;
     };
   }, []);
 
@@ -408,22 +407,15 @@ const HomePage = () => {
                         placeholder="How can we help?"
                       ></textarea>
                     </div>
-                    
-                    {/* hCaptcha div */}
-                    <div className="flex justify-center">
-                      <div 
-                        id="hero-captcha-container"
-                        className="h-captcha" 
-                        data-captcha="true"
-                        data-size="normal"
-                        data-theme="light"
-                      ></div>
-                    </div>
-                    
-                    <div className="text-xs text-white/70">
-                      By submitting this form, you agree to our 
-                      <a href="https://policies.google.com/privacy" className="text-white hover:underline"> Privacy Policy</a> and
-                      <a href="https://policies.google.com/terms" className="text-white hover:underline"> Terms of Service</a>.
+
+                    {/* hCaptcha */}
+                    <div>
+                      <HCaptcha
+                        sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
+                        reCaptchaCompat={false}
+                        onVerify={onHCaptchaChange}
+                        theme="dark"
+                      />
                     </div>
                     
                     {formStatus.error && (
