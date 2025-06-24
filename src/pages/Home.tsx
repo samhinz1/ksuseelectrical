@@ -111,53 +111,37 @@ const HomePage = () => {
       message: '' 
     });
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    
-    // Create a traditional form submission using hidden iframe approach
-    // This avoids CORS issues while keeping the user on the same page
     try {
-      // Create a hidden iframe for the form submission
-      const iframe = document.createElement('iframe');
-      iframe.name = 'form-submit-iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      const form = e.currentTarget;
+      const formData = new FormData(form);
       
-      // Set the form target to the iframe
-      form.target = 'form-submit-iframe';
-      
-      // Listen for iframe load event to know when submission completes
-      iframe.onload = () => {
-        // Show success message
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
         setFormStatus({
           loading: false,
           success: true,
           error: false,
           message: 'Thank you! We will contact you shortly.'
         });
-        
-        // Reset the form
         form.reset();
-        
-        // Reset captcha
         if (window.hcaptcha) {
           window.hcaptcha.reset();
         }
-        
-        // Clean up the iframe after a delay
-        setTimeout(() => {
-          document.body.removeChild(iframe);
-        }, 1000);
-      };
-      
-      // Submit the form
-      form.submit();
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
     } catch (error) {
       setFormStatus({
         loading: false,
         success: false,
         error: true,
-        message: 'Something went wrong. Please try again.'
+        message: error instanceof Error ? error.message : 'Something went wrong. Please try again.'
       });
     }
   };
